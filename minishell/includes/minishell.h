@@ -6,10 +6,11 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 11:55:38 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/08 13:04:54 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/09/09 10:37:04 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../includes/libft.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

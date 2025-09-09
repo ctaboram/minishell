@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 11:22:55 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/05/12 12:22:15 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/09/09 10:40:44 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,10 @@ void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
+
+
+// OTHER FUNCTIONS
+int	ft_strcmp(const char *s1, const char *s2);
 
 //	LIST STRUCT
 typedef struct s_list

@@ -12,7 +12,7 @@ SRC_DIR		= src
 OBJ_DIR		= obj
 
 SRCS		=	$(SRC_DIR)/main.c \
-				$(SRC_DIR)/utils.c
+				$(SRC_DIR)/prompt.c \
 
 OBJS		=	$(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 
@@ -21,9 +21,10 @@ LIBFT_H		= $(INCLUDE_DIR)/libft.h
 
 IFLAGS		= -I$(INCLUDE_DIR) -I$(LIBFT_DIR)
 
-RED         = \033[1;31m
-GREEN       = \033[1;32m
-YELLOW      = \033[1;33m
+RED			= \033[1;31m
+GREEN		= \033[1;32m
+YELLOW		= \033[1;33m
+RESET		= \033[0m
 
 all: $(NAME)
 
@@ -32,26 +33,22 @@ $(NAME): $(OBJS) $(LIBFT_A)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT_A) $(LDFLAGS) $(IFLAGS) -o $(NAME)
 	@echo "$(GREEN)Compilation complete$(RESET)"
 
-$(OBJ_DIR)/main.o: $(SRC_DIR)/main.c $(MINISHELL_H) $(LIBFT_H)
-	mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
-
-$(OBJ_DIR)/utils.o: $(SRC_DIR)/utils.c $(MINISHELL_H) $(LIBFT_H)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(MINISHELL_H) $(LIBFT_H)
 	mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
 
 $(LIBFT_A):
-	@echo "$(YELLOW)Compiling libft..."
+	@echo "$(YELLOW)Compiling libft...$(RESET)"
 	@$(MAKE) --no-print-directory -C $(LIBFT_DIR)
-	@echo "$(GREEN)Compilation complete"
+	@echo "$(GREEN)Compilation complete$(RESET)"
 
 clean:
-	@echo "$(RED)Eliminando obj..."
+	@echo "$(RED)Eliminando obj...$(RESET)"
 	rm -rf $(OBJ_DIR)
 	$(MAKE) --no-print-directory -C $(LIBFT_DIR) clean
 
 fclean: clean
-	@echo "$(RED)Eliminando $(NAME)..."
+	@echo "$(RED)Eliminando $(NAME)...$(RESET)"
 	rm -f $(NAME)
 	$(MAKE) --no-print-directory -C $(LIBFT_DIR) fclean
 

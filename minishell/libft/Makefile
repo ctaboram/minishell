@@ -54,6 +54,7 @@ SRC = \
 	ft_hexa.c \
 	ft_num.c \
 	ft_putcs.c \
+	ft_strcmp.c \
 
 OBJ = $(SRC:.c=.o)
 
