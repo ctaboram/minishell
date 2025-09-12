@@ -1,7 +1,7 @@
 # 🐚 Minishell
 
 Un proyecto de la escuela **42** hecho por:  
-- 👨‍💻 [nacuna-g](https://github.com/nacuna-g)  
+- 👨‍💻 [nacuna-g](https://github.com/nicoagnz)  
 - 👨‍💻 [ctaboram](https://github.com/ctaboram)  
 
 ---
