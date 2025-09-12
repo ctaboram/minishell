@@ -19,11 +19,3 @@ El objetivo de **Minishell** es recrear un shell simple de UNIX, implementando u
 Este proyecto nos ayuda a entender cómo funciona un shell por dentro, profundizando en conceptos de **procesos**, **sistemas de archivos**, y **manejo de señales** en C.
 
 ---
-
-## 📂 Estructura actual del proyecto
-
-La estructura del repositorio aún no está terminada. Por ahora trabajamos de manera separada en nuestras propias carpetas dentro de `minishell/`:
-
-minishell/
-├── nacuna-g/
-├── ctaboram/
