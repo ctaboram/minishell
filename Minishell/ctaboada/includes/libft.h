@@ -6,7 +6,7 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 11:22:55 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/12 10:24:22 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/09/12 09:58:02 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,11 +64,8 @@ void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 
-
 // OTHER FUNCTIONS
 int	ft_strcmp(const char *s1, const char *s2);
-int ft_isspace(int c);
-char *ft_strndup(const char *s, size_t n);
 
 //	LIST STRUCT
 typedef struct s_list

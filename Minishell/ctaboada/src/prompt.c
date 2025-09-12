@@ -6,7 +6,7 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 11:01:11 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/12 10:42:08 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/09/12 10:01:45 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,54 +14,68 @@
 
 static char *get_prompt(void)
 {
-	static char prompt[MAX_PROMPT_SIZE];
-	char *username;
+    static char	prompt[MAX_PROMPT_SIZE];
+    char		*username;
+    char		cwd[512];
 
-	username = getenv("USER");
-	if(!username)
-		username = getenv("LOGNAME");
-	if(!username)
-		username = "guest";
-	snprintf(prompt,MAX_PROMPT_SIZE,BPURPLE"%s@minishell->"RESET,username);
-	return(prompt);
+    username = getenv("USER");
+    if(!username)
+        username = getenv("LOGNAME");
+    if(!username)
+        username = "guest";
+    if(!getcwd(cwd, sizeof(cwd)))
+        cwd[0] = '\0';
+    snprintf(prompt,MAX_PROMPT_SIZE,BPURPLE"%s@minishell~"YELLOW"%s->"RESET,username,cwd);
+    return(prompt);
 }
 
-int	ft_prompt(void)
+int ft_prompt(void)
 {
-	char	*line;
-	t_token	*tokens;
-
-	line = readline(get_prompt());
-	if (!line)
-	{
-		printf("exit\n");
-		return (0);
-	}
-	if (*line)
-		add_history(line);
-	if (ft_strcmp(line, "exit") == 0)
-	{
-		free(line);
-		printf("exit\n");
-		return (0);
-	}
-	else if (ft_strcmp(line, "") != 0)
-	{
-		tokens = tokenize(line);
-		t_token *tmp = tokens;
-		while (tmp)
-		{
-			printf("Token: %s, Type: %d\n", tmp->value, tmp->type);
-			tmp = tmp->next;
-		}
-		while (tokens)
-		{
-			t_token *tmp = tokens;
-			tokens = tokens->next;
-			free(tmp->value);
-			free(tmp);
-		}
-	}
-	free(line);
-	return (1);
+    char *line;
+    line = readline(get_prompt());
+    if (!line)
+    {
+        printf("exit\n");
+        return (0);
+    }
+    if (*line)
+        add_history(line);
+    if (ft_strcmp(line, "exit") == 0)
+    {
+        free(line);
+        printf("exit\n");
+        return (0);
+    }
+    // Elimina los prints de depuración y solo ejecuta la lógica
+    if (ft_strcmp(line, "") != 0)
+    {
+        char **words;
+        int i;
+        i = 0;
+        // SEPARO LAS PALABRAS DEL PROMPT Y LAS GUARDO EN UN ARRAY
+        words = ft_split(line, ' ');
+        if (words && words[0])
+        {
+            if (ft_strcmp(words[0], "cd") == 0)
+                ft_builtin_cd(words);
+			else if (ft_strcmp(words[0], "echo") == 0)
+				ft_builting_echo(words);
+			else if (ft_strcmp(words[0], "pwd") == 0)
+				ft_builtin_pwd();
+            // Aquí puedes agregar la lógica para ejecutar el comando real
+            // Por ahora, no mostramos nada en pantalla
+        }
+        // Liberar memoria
+        if (words)
+        {
+            while(words[i])
+            {
+                free(words[i]);
+                i++;
+            }
+            free(words);
+        }
+    }
+    free(line);
+    return (1);
 }

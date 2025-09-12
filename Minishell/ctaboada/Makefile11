@@ -13,11 +13,8 @@ OBJ_DIR		= obj
 
 SRCS		=	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/prompt.c \
-				$(SRC_DIR)/ft_cd.c \
-				$(SRC_DIR)/ft_echo.c \
-				$(SRC_DIR)/ft_pwd.c \
-				$(SRC_DIR)/tokenizacion.c \
-
+				$(SRC_DIR)/builtins/ft_cd.c \
+				$(SRC_DIR)/token/tokenizacion.c \
 
 OBJS		=	$(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 
@@ -39,7 +36,7 @@ $(NAME): $(OBJS) $(LIBFT_A)
 	@echo "$(GREEN)Compilation complete$(RESET)"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(MINISHELL_H) $(LIBFT_H)
-	mkdir -p $(OBJ_DIR)
+	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
 
 $(LIBFT_A):

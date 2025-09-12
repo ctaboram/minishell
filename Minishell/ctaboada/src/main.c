@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 11:55:49 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/11 15:42:00 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/09/09 11:01:29 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,5 +17,6 @@ int main(void)
 	printf(HEADER);
 	while (ft_prompt())
 		;
+		
 	return (0);
 }
