@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/12 10:27:06 by nikotina          #+#    #+#             */
-/*   Updated: 2025/09/12 10:45:53 by nikotina         ###   ########.fr       */
+/*   Created: 2025/09/16 11:13:14 by nacuna-g          #+#    #+#             */
+/*   Updated: 2025/09/16 11:13:17 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ t_token	*create_token(char *value, t_token_type type)
 	t_token	*token;
 
 	token = malloc(sizeof(t_token));
-	if (!token)
+	if (token == NULL)
 		return (NULL);
 	token->value = ft_strdup(value);
 	token->type = type;
@@ -29,15 +29,104 @@ void	add_token(t_token **list, t_token *new_token)
 {
 	t_token	*tmp;
 
-	if (!*list)
+	if (*list == NULL)
 		*list = new_token;
 	else
 	{
 		tmp = *list;
-		while (tmp->next)
+		while (tmp->next != NULL)
 			tmp = tmp->next;
 		tmp->next = new_token;
 	}
+}
+
+static void	handle_quote(char **start, char **end, t_token **tokens, char quote)
+{
+	char	*value;
+
+	*end = *end + 1;
+	while (**end && **end != quote)
+		*end = *end + 1;
+	if (**end != quote)
+	{
+		printf("Error: unclosed quote\n");
+		free_tokens(*tokens);
+		*tokens = NULL;
+		return ;
+	}
+	value = ft_strndup(*start + 1, *end - *start - 1);
+	if (quote == '\'')
+		add_token(tokens, create_token(value, TOKEN_QUOTE_SINGLE));
+	else
+		add_token(tokens, create_token(value, TOKEN_QUOTE_DOUBLE));
+	free(value);
+	*end = *end + 1;
+	*start = *end;
+}
+
+static void	handle_special(char **start, char **end, t_token **tokens)
+{
+	if (**end == '|')
+	{
+		if (*(*end + 1) == '|')
+		{
+			add_token(tokens, create_token("||", TOKEN_OR));
+			*start = *start + 2;
+		}
+		else
+		{
+			add_token(tokens, create_token("|", TOKEN_PIPE));
+			*start = *start + 1;
+		}
+	}
+	else if (**end == '>' && *(*end + 1) == '>')
+	{
+		add_token(tokens, create_token(">>", TOKEN_APPEND));
+		*start = *start + 2;
+	}
+	else if (**end == '>')
+	{
+		add_token(tokens, create_token(">", TOKEN_REDIRECT_OUT));
+		*start = *start + 1;
+	}
+	else if (**end == '<' && *(*end + 1) == '<')
+	{
+		add_token(tokens, create_token("<<", TOKEN_HEREDOC));
+		*start = *start + 2;
+	}
+	else if (**end == '<')
+	{
+		add_token(tokens, create_token("<", TOKEN_REDIRECT_IN));
+		*start = *start + 1;
+	}
+	else if (**end == '&' && *(*end + 1) == '&')
+	{
+		add_token(tokens, create_token("&&", TOKEN_AND));
+		*start = *start + 2;
+	}
+	else if (**end == '(')
+	{
+		add_token(tokens, create_token("(", TOKEN_PAREN_OPEN));
+		*start = *start + 1;
+	}
+	else if (**end == ')')
+	{
+		add_token(tokens, create_token(")", TOKEN_PAREN_CLOSE));
+		*start = *start + 1;
+	}
+}
+
+static void	handle_word(char **start, char **end, t_token **tokens)
+{
+	char	*value;
+
+	while (**end && !ft_isspace(**end) && **end != '|' && **end != '>' && **end != '<'
+		&& **end != '&' && **end != '(' && **end != ')')
+		*end = *end + 1;
+	value = ft_strndup(*start, *end - *start);
+	add_token(tokens, create_token(value, TOKEN_WORD));
+	free(value);
+	*start = *end;
 }
 
 t_token	*tokenize(char *line)
@@ -52,54 +141,32 @@ t_token	*tokenize(char *line)
 	{
 		while (*start && ft_isspace(*start))
 			start++;
-		if (!*start)
-			break;
+		if (*start == 0)
+			break ;
 		end = start;
-		if (*end == '|')
-		{
-			add_token(&tokens, create_token("|", TOKEN_PIPE));
-			start++;
-		}
-		else if (*end == '>' && *(end + 1) == '>')
-		{
-			add_token(&tokens, create_token(">>", TOKEN_APPEND));
-			start += 2;
-		}
-		else if (*end == '>')
-		{
-			add_token(&tokens, create_token(">", TOKEN_REDIRECT_OUT));
-			start++;
-		}
-		else if (*end == '<')
-		{
-			add_token(&tokens, create_token("<", TOKEN_REDIRECT_IN));
-			start++;
-		}
-		else if (*end == '\'' || *end == '"')
-		{
-			char quote = *end;
-			end++;
-			while (*end && *end != quote)
-				end++;
-			if (*end == quote)
-			{
-				char *value = ft_strndup(start + 1, end - start - 1);
-				add_token(&tokens, create_token(value, TOKEN_QUOTE));
-				free(value);
-				end++;
-			}
-			start = end;
-		}
+		if (*end == '\'' || *end == '"')
+			handle_quote(&start, &end, &tokens, *end);
+		else if (*end == '|' || *end == '>' || *end == '<' || *end == '&'
+			|| *end == '(' || *end == ')')
+			handle_special(&start, &end, &tokens);
 		else
-		{
-			while (*end && !ft_isspace(*end) && *end != '|' && *end != '>' && *end != '<')
-				end++;
-			char *value = ft_strndup(start, end - start);
-			add_token(&tokens, create_token(value, TOKEN_WORD));
-			free(value);
-			start = end;
-		}
+			handle_word(&start, &end, &tokens);
+		if (tokens == NULL)
+			return (NULL);
 	}
 	add_token(&tokens, create_token("", TOKEN_EOF));
 	return (tokens);
+}
+
+void	free_tokens(t_token *tokens)
+{
+	t_token	*tmp;
+
+	while (tokens)
+	{
+		tmp = tokens;
+		tokens = tokens->next;
+		free(tmp->value);
+		free(tmp);
+	}
 }

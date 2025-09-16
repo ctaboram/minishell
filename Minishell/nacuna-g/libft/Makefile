@@ -57,6 +57,8 @@ SRC = \
 	ft_strcmp.c \
 	ft_isspace.c \
 	ft_strndup.c \
+	ft_free_array.c \
+	ft_strjoin_free.c \
 
 OBJ = $(SRC:.c=.o)
 

@@ -14,6 +14,11 @@ OBJ_DIR		= obj
 SRCS		=	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/prompt.c \
 				$(SRC_DIR)/token.c \
+				$(SRC_DIR)/parser.c \
+				$(SRC_DIR)/expand.c \
+				$(SRC_DIR)/execute.c \
+				$(SRC_DIR)/signals.c \
+				$(SRC_DIR)/builtins.c \
 
 OBJS		=	$(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 
