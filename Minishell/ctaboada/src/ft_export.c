@@ -1,29 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_pwd.c                                           :+:      :+:    :+:   */
+/*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/16 10:42:41 by ctaboada          #+#    #+#             */
-/*   Updated: 2025/09/16 10:42:42 by ctaboada         ###   ########.fr       */
+/*   Created: 2025/09/16 12:01:25 by ctaboada          #+#    #+#             */
+/*   Updated: 2025/09/16 13:07:35 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int ft_builtin_pwd(void)
+int ft_builtin_export(char **arg,char **env)
 {
-	char cwd[512];
-
-	if(getcwd(cwd, sizeof(cwd)) != NULL)
+	int		i;
+	char	*equal;
+	int		key_len;
+	i = 0;
+	if(!arg[1])
 	{
-		printf("%s\n", cwd);
-		return(0);
+		while(env[i])
+		{
+			equal = ft_strchr(env[i],'=');
+			if(equal)
+			{
+				key_len = equal - env[i];
+				ft_printf("declare -x %.*s=\"%s\"\n",key_len,env[i],equal + 1);
+			}
+			else
+			{
+				ft_printf("declare -x %s\n",env[i]);
+			}
+			i++;
+		}
+		return 0;
 	}
-	else
-	{
-		perror("pwd");
-		return(1);
-	}
+	return 1;
 }

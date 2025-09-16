@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 11:55:38 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/12 10:03:12 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/09/16 12:18:37 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,19 @@ typedef struct s_token {
 } t_token;
 
 // MAIN FUNCTIONS
-int ft_prompt(void);
+int ft_prompt(char **env,char ** dup_env);
 
 // BUILTINS
 int ft_builtin_cd(char **args);
 int ft_builting_echo(char **args);
 int ft_builtin_pwd(void);
+int ft_builtin_env(char **env);
+int ft_builtin_export(char **arg,char **env);
 
 // TOKENIZATION
 t_token *tokenize(char *line);
 void add_token(t_token **list, t_token *new_token);
 t_token *create_token(char *value, t_token_type type);
+
+// UTILS
+char ** dup_env(char **env);
