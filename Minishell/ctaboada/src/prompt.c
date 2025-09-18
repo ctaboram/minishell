@@ -6,7 +6,7 @@
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 11:01:11 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/16 12:13:35 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/09/18 11:24:30 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ static char *get_prompt(void)
 	return(prompt);
 	}
 
-	int ft_prompt(char **env,char **dup_env)
-	{
+int ft_prompt(char **dup_env)
+{
 	char *line;
 	line = readline(get_prompt());
 	if (!line)
@@ -63,7 +63,7 @@ static char *get_prompt(void)
 			else if (ft_strcmp(words[0], "pwd") == 0)
 				ft_builtin_pwd();
 			else if(ft_strcmp(words[0], "env") == 0)
-				ft_builtin_env(env);
+				ft_builtin_env(environ);
 			else if(ft_strcmp(words[0],"export") == 0)
 				ft_builtin_export(words,dup_env);
 			// Aquí puedes agregar la lógica para ejecutar el comando real

@@ -6,7 +6,7 @@
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 11:55:38 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/16 12:18:37 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/09/18 12:15:05 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,10 @@ typedef struct s_token {
     struct s_token *next; // Puntero al siguiente token (lista enlazada)
 } t_token;
 
+extern char **environ;
+
 // MAIN FUNCTIONS
-int ft_prompt(char **env,char ** dup_env);
+int ft_prompt(char ** dup_env);
 
 // BUILTINS
 int ft_builtin_cd(char **args);
@@ -74,3 +76,4 @@ t_token *create_token(char *value, t_token_type type);
 
 // UTILS
 char ** dup_env(char **env);
+void ft_free_env(char **env);

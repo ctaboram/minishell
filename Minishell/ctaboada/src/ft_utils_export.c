@@ -1,25 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_utils_export.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/08 11:55:49 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/18 12:29:14 by ctaboada         ###   ########.fr       */
+/*   Created: 2025/09/18 12:56:07 by ctaboada          #+#    #+#             */
+/*   Updated: 2025/09/18 12:58:29 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-	extern char **environ;
-int main(void)
+int is_valid_identifier()
 {
-	char **g_env;
 	
-	g_env = dup_env(environ);
-	printf(HEADER);
-	while (ft_prompt( g_env))
-		;
-	ft_free_env(g_env);
-	return (0);
+}
+add_or_update_env(env,arg[i])
+{
+	
 }
