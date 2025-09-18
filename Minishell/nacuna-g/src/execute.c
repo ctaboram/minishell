@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 11:15:00 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/16 12:12:14 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/09/18 10:23:34 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,25 +64,28 @@ static void	apply_redir_in(t_redir *redir)
 	}
 }
 
-static void	apply_redir_out(t_redir *redir)
+static void apply_redir_out(t_redir *redir)
 {
-	int	fd;
-
-	while (redir != NULL)
-	{
-		if (redir->type == TOKEN_REDIRECT_OUT)
-			fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		else
-			fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (fd < 0)
-		{
-			perror(redir->file);
-			exit(1);
-		}
-		dup2(fd, STDOUT_FILENO);
-		close(fd);
-		redir = redir->next;
-	}
+    int fd;
+    
+    while (redir != NULL)
+    {
+        if (redir->type == TOKEN_REDIRECT_OUT)
+            fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        else if (redir->type == TOKEN_APPEND)
+            fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+        else
+            return ; // No debería llegar aquí
+        
+        if (fd < 0)
+        {
+            perror(redir->file);
+            exit(1);
+        }
+        dup2(fd, STDOUT_FILENO);
+        close(fd);
+        redir = redir->next;
+    }
 }
 
 static char	*get_path_from_env(char **envp)
@@ -139,39 +142,57 @@ char	*find_path(char *cmd, char **envp)
 	return (full);
 }
 
-static void	child_process(t_cmd *current, int prev_fd, int *pipes, int i, int num_cmds, char ***envp)
+static void child_process(t_cmd *current, int prev_fd, int *pipes, 
+                         int i, int num_cmds, char ***envp)
 {
-	if (prev_fd != STDIN_FILENO)
-	{
-		dup2(prev_fd, STDIN_FILENO);
-		close(prev_fd);
-	}
-	if (current->next != NULL)
-	{
-		close(pipes[i * 2]);
-		dup2(pipes[i * 2 + 1], STDOUT_FILENO);
-		close(pipes[i * 2 + 1]);
-	}
-	apply_redir_in(current->redir_in);
-	apply_redir_out(current->redir_out);
-	i = 0;
-	while (i < num_cmds - 1)
-	{
-		close(pipes[i * 2]);
-		close(pipes[i * 2 + 1]);
-		i++;
-	}
-	if (is_builtin(current->args[0]))
-		exit(exec_builtin(current->args, envp));
-	char *path = find_path(current->args[0], *envp);
-	if (path == NULL)
-	{
-		printf("%s: command not found\n", current->args[0]);
-		exit(127);
-	}
-	execve(path, current->args, *envp);
-	perror("execve");
-	exit(126);
+    // Cerrar todos los pipes que no necesite este proceso
+    int j = 0;
+    while (j < num_cmds - 1)
+    {
+        if (j != i)
+        {
+            close(pipes[j * 2]);
+            close(pipes[j * 2 + 1]);
+        }
+        j++;
+    }
+    
+    // Configurar entrada
+    if (prev_fd != STDIN_FILENO)
+    {
+        dup2(prev_fd, STDIN_FILENO);
+        close(prev_fd);
+    }
+    
+    // Configurar salida (excepto para el último comando)
+    if (current->next != NULL && i < num_cmds - 1)
+    {
+        close(pipes[i * 2]); // Cerrar lectura
+        dup2(pipes[i * 2 + 1], STDOUT_FILENO);
+        close(pipes[i * 2 + 1]); // Cerrar escritura
+    }
+    
+    // Aplicar redirecciones
+    apply_redir_in(current->redir_in);
+    apply_redir_out(current->redir_out);
+    
+    // Ejecutar comando
+    if (is_builtin(current->args[0]))
+    {
+        g_exit_status = exec_builtin(current->args, envp);
+        exit(g_exit_status);
+    }
+    
+    char *path = find_path(current->args[0], *envp);
+    if (path == NULL)
+    {
+        printf("%s: command not found\n", current->args[0]);
+        exit(127);
+    }
+    
+    execve(path, current->args, *envp);
+    perror("execve");
+    exit(126);
 }
 
 static void	wait_children(pid_t *pids, int num_cmds)
