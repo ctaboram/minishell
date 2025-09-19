@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 11:13:14 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/16 11:13:17 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/09/19 11:55:18 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,25 +79,31 @@ static void	handle_special(char **start, char **end, t_token **tokens)
 			*start = *start + 1;
 		}
 	}
-	else if (**end == '>' && *(*end + 1) == '>')
-	{
-		add_token(tokens, create_token(">>", TOKEN_APPEND));
-		*start = *start + 2;
-	}
 	else if (**end == '>')
 	{
-		add_token(tokens, create_token(">", TOKEN_REDIRECT_OUT));
-		*start = *start + 1;
-	}
-	else if (**end == '<' && *(*end + 1) == '<')
-	{
-		add_token(tokens, create_token("<<", TOKEN_HEREDOC));
-		*start = *start + 2;
+		if (*(*end + 1) == '>')
+		{
+			add_token(tokens, create_token(">>", TOKEN_APPEND));
+			*start = *start + 2;
+		}
+		else
+		{
+			add_token(tokens, create_token(">", TOKEN_REDIRECT_OUT));
+			*start = *start + 1;
+		}
 	}
 	else if (**end == '<')
 	{
-		add_token(tokens, create_token("<", TOKEN_REDIRECT_IN));
-		*start = *start + 1;
+		if (*(*end + 1) == '<')
+		{
+			add_token(tokens, create_token("<<", TOKEN_HEREDOC));
+			*start = *start + 2;
+		}
+		else
+		{
+			add_token(tokens, create_token("<", TOKEN_REDIRECT_IN));
+			*start = *start + 1;
+		}
 	}
 	else if (**end == '&' && *(*end + 1) == '&')
 	{

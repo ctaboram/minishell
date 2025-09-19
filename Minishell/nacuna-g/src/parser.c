@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 11:12:59 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/18 10:20:44 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/09/19 12:39:00 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ static void	add_arg(char ***args, char *value)
 	new_args[len + 1] = NULL;
 	free(*args);
 	*args = new_args;
+	return ;
 }
 
 static int	handle_redir(t_token **tmp, t_cmd *current_cmd)
@@ -95,80 +96,71 @@ static int	handle_redir(t_token **tmp, t_cmd *current_cmd)
 		add_redir(&current_cmd->redir_in, new_redir((*tmp)->value, type));
 	else
 		add_redir(&current_cmd->redir_out, new_redir((*tmp)->value, type));
-	*tmp = (*tmp)->next;
 	return (0);
 }
 
 t_cmd *parse(t_token *tokens)
 {
-    t_cmd *cmds;
-    t_cmd *current_cmd;
-    t_token *tmp;
+	t_cmd	*cmds;
+	t_cmd	*current_cmd;
+	t_token	*tmp;
 
-    cmds = NULL;
-    current_cmd = NULL;
-    tmp = tokens;
-    
-    while (tmp != NULL && tmp->type != TOKEN_EOF)
-    {
+	cmds = NULL;
+	current_cmd = NULL;
+	tmp = tokens;
+	while (tmp != NULL && tmp->type != TOKEN_EOF)
+	{
 		if (current_cmd == NULL)
-        {
-            current_cmd = new_cmd();
-            if (current_cmd == NULL)
-            {
-                free_cmd(cmds);
-                return (NULL);
-            }
-            
-            if (cmds == NULL)
-                cmds = current_cmd;
-            else
-            {
-                t_cmd *last = cmds;
-                while (last->next != NULL)
-                    last = last->next;
-                last->next = current_cmd;
-            }
-        }
-        if (tmp->type == TOKEN_WORD || tmp->type == TOKEN_QUOTE_SINGLE || 
-            tmp->type == TOKEN_QUOTE_DOUBLE)
-        {
-            add_arg(&current_cmd->args, tmp->value);
-        }
-        else if (tmp->type == TOKEN_REDIRECT_IN || tmp->type == TOKEN_HEREDOC ||
-                 tmp->type == TOKEN_REDIRECT_OUT || tmp->type == TOKEN_APPEND)
-        {
-            if (handle_redir(&tmp, current_cmd))
-            {
-                free_cmd(cmds);
-                return (NULL);
-            }
-            continue; // Ya avanzamos tmp en handle_redir
-        }
-        else if (tmp->type == TOKEN_PIPE)
-        {
-            if (current_cmd->args == NULL)
-            {
-                printf("syntax error near unexpected token `|'\n");
-                free_cmd(cmds);
-                return (NULL);
-            }
-            current_cmd = NULL; // Preparar para próximo comando
-            tmp = tmp->next;
-            continue;
-        }
-        
-        tmp = tmp->next;
-    }
-    
-    if (current_cmd != NULL && current_cmd->args == NULL)
-    {
-        printf("syntax error: incomplete command\n");
-        free_cmd(cmds);
-        return (NULL);
-    }
-    
-    return (cmds);
+		{
+			current_cmd = new_cmd();
+			if (current_cmd == NULL)
+			{
+				free_cmd(cmds);
+				return (NULL);
+			}
+			if (cmds == NULL)
+				cmds = current_cmd;
+			else
+			{
+				t_cmd *last;
+
+				last = cmds;
+				while (last->next != NULL)
+					last = last->next;
+				last->next = current_cmd;
+			}
+		}
+		if (tmp->type == TOKEN_WORD || tmp->type == TOKEN_QUOTE_SINGLE || 
+			tmp->type == TOKEN_QUOTE_DOUBLE)
+			add_arg(&current_cmd->args, tmp->value);
+		else if (tmp->type == TOKEN_REDIRECT_IN || tmp->type == TOKEN_HEREDOC ||
+				 tmp->type == TOKEN_REDIRECT_OUT || tmp->type == TOKEN_APPEND)
+		{
+			if (handle_redir(&tmp, current_cmd))
+			{
+				free_cmd(cmds);
+				return (NULL);
+			}
+		}
+		else if (tmp->type == TOKEN_PIPE)
+		{
+			if (current_cmd->args == NULL)
+			{
+				printf("syntax error near unexpected token `|'\n");
+				free_cmd(cmds);
+				return (NULL);
+			}
+			current_cmd = NULL;
+		}
+		tmp = tmp->next;
+	}
+	if (current_cmd != NULL && current_cmd->args == NULL)
+	{
+		printf("syntax error: incomplete command\n");
+		free_cmd(cmds);
+		return (NULL);
+	}
+	return (cmds);
 }
 
 static void	free_redirs(t_redir *redir)

@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 11:14:14 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/16 11:14:25 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/09/19 10:29:10 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 volatile sig_atomic_t g_signal = 0;
 
-static void	sig_handler(int sig)
+static void sig_handler(int sig)
 {
 	g_signal = sig;
 	if (sig == SIGINT)
@@ -23,7 +23,7 @@ static void	sig_handler(int sig)
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
-		g_exit_status = 130;
+		*exit_status() = 130;
 	}
 }
 

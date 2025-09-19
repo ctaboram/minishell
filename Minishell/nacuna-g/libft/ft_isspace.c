@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_isspace.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/12 09:41:30 by nikotina          #+#    #+#             */
-/*   Updated: 2025/09/12 09:41:33 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/09/18 12:42:45 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-int ft_isspace(int c)
+int	ft_isspace(int c)
 {
-	return (c == ' ' || c == '\n' ||
-		c == '\t' || c == '\v' || c == '\f' || c == '\r');
+	return (c == ' ' || c == '\n'
+		|| c == '\t' || c == '\v' || c == '\f' || c == '\r');
 }

@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 11:15:00 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/18 10:23:34 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/09/19 10:49:36 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,26 +66,25 @@ static void	apply_redir_in(t_redir *redir)
 
 static void apply_redir_out(t_redir *redir)
 {
-    int fd;
-    
-    while (redir != NULL)
-    {
-        if (redir->type == TOKEN_REDIRECT_OUT)
-            fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        else if (redir->type == TOKEN_APPEND)
-            fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-        else
-            return ; // No debería llegar aquí
-        
-        if (fd < 0)
-        {
-            perror(redir->file);
-            exit(1);
-        }
-        dup2(fd, STDOUT_FILENO);
-        close(fd);
-        redir = redir->next;
-    }
+	int fd;
+
+	while (redir != NULL)
+	{
+		if (redir->type == TOKEN_REDIRECT_OUT)
+			fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		else if (redir->type == TOKEN_APPEND)
+			fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		else
+			return ;
+		if (fd < 0)
+		{
+			perror(redir->file);
+			exit(1);
+		}
+		dup2(fd, STDOUT_FILENO);
+		close(fd);
+		redir = redir->next;
+	}
 }
 
 static char	*get_path_from_env(char **envp)
@@ -142,57 +141,85 @@ char	*find_path(char *cmd, char **envp)
 	return (full);
 }
 
-static void child_process(t_cmd *current, int prev_fd, int *pipes, 
-                         int i, int num_cmds, char ***envp)
+static void child_process(t_child *params)
 {
-    // Cerrar todos los pipes que no necesite este proceso
-    int j = 0;
-    while (j < num_cmds - 1)
-    {
-        if (j != i)
-        {
-            close(pipes[j * 2]);
-            close(pipes[j * 2 + 1]);
-        }
-        j++;
-    }
-    
-    // Configurar entrada
-    if (prev_fd != STDIN_FILENO)
-    {
-        dup2(prev_fd, STDIN_FILENO);
-        close(prev_fd);
-    }
-    
-    // Configurar salida (excepto para el último comando)
-    if (current->next != NULL && i < num_cmds - 1)
-    {
-        close(pipes[i * 2]); // Cerrar lectura
-        dup2(pipes[i * 2 + 1], STDOUT_FILENO);
-        close(pipes[i * 2 + 1]); // Cerrar escritura
-    }
-    
-    // Aplicar redirecciones
-    apply_redir_in(current->redir_in);
-    apply_redir_out(current->redir_out);
-    
-    // Ejecutar comando
-    if (is_builtin(current->args[0]))
-    {
-        g_exit_status = exec_builtin(current->args, envp);
-        exit(g_exit_status);
-    }
-    
-    char *path = find_path(current->args[0], *envp);
-    if (path == NULL)
-    {
-        printf("%s: command not found\n", current->args[0]);
-        exit(127);
-    }
-    
-    execve(path, current->args, *envp);
-    perror("execve");
-    exit(126);
+	int j;
+
+	j = 0;
+	while (j < params->num_cmds - 1)
+	{
+		if (j != params->i)
+		{
+			close(params->pipes[j * 2]);
+			close(params->pipes[j * 2 + 1]);
+		}
+		j++;
+	}
+	if (params->prev_fd != STDIN_FILENO)
+	{
+		dup2(params->prev_fd, STDIN_FILENO);
+		close(params->prev_fd);
+	}
+	if (params->current->next != NULL && params->i < params->num_cmds - 1)
+	{
+		close(params->pipes[params->i * 2]);
+		dup2(params->pipes[params->i * 2 + 1], STDOUT_FILENO);
+		close(params->pipes[params->i * 2 + 1]);
+	}
+	apply_redir_in(params->current->redir_in);
+	apply_redir_out(params->current->redir_out);
+	if (is_builtin(params->current->args[0]))
+	{
+		*exit_status() = exec_builtin(params->current->args, params->envp);
+		exit(*exit_status());
+	}
+	char *path;
+
+	path = find_path(params->current->args[0], *params->envp);
+	if (path == NULL)
+	{
+		printf("%s: command not found\n", params->current->args[0]);
+		exit(127);
+	}
+	execve(path, params->current->args, *params->envp);
+	perror("execve");
+	exit(126);
+}
+
+static void fork_commands(t_exec *exec)
+{
+	t_cmd	*current;
+	int		prev_fd;
+	int		i;
+
+	current = exec->cmds;
+	prev_fd = STDIN_FILENO;
+	i = 0;
+	while (current != NULL)
+	{
+		exec->pids[i] = fork();
+		if (exec->pids[i] == 0)
+		{
+			t_child params;
+
+			params.current = current;
+			params.prev_fd = prev_fd;
+			params.pipes = exec->pipes;
+			params.i = i;
+			params.num_cmds = exec->num_cmds;
+			params.envp = exec->envp;
+			child_process(&params);
+		}
+		if (prev_fd != STDIN_FILENO)
+			close(prev_fd);
+		if (current->next != NULL)
+		{
+			close(exec->pipes[i * 2 + 1]);
+			prev_fd = exec->pipes[i * 2];
+		}
+		current = current->next;
+		i++;
+	}
 }
 
 static void	wait_children(pid_t *pids, int num_cmds)
@@ -205,61 +232,48 @@ static void	wait_children(pid_t *pids, int num_cmds)
 	{
 		waitpid(pids[i], &status, 0);
 		if (WIFEXITED(status))
-			g_exit_status = WEXITSTATUS(status);
+			*exit_status() = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
-			g_exit_status = 128 + WTERMSIG(status);
+			*exit_status() = 128 + WTERMSIG(status);
 		i++;
 	}
 }
 
 void	execute(t_cmd *cmds, char ***envp)
 {
-	int		num_cmds;
-	int		*pipes;
-	pid_t	*pids;
-	t_cmd	*current;
-	int		prev_fd;
-	int		i;
+	int num_cmds;
+	int *pipes;
+	pid_t *pids;
+	t_exec exec_params;
 
 	num_cmds = count_cmds(cmds);
 	if (num_cmds == 1 && is_builtin(cmds->args[0]) && cmds->redir_in == NULL && cmds->redir_out == NULL && cmds->next == NULL)
 	{
-		g_exit_status = exec_builtin(cmds->args, envp);
+		*exit_status() = exec_builtin(cmds->args, envp);
 		return ;
 	}
 	pipes = malloc(sizeof(int) * (num_cmds - 1) * 2);
 	pids = malloc(sizeof(pid_t) * num_cmds);
-	i = 0;
-	while (i < num_cmds - 1)
+	exec_params.cmds = cmds;
+	exec_params.pipes = pipes;
+	exec_params.pids = pids;
+	exec_params.envp = envp;
+	exec_params.num_cmds = num_cmds;
+	num_cmds = exec_params.num_cmds - 1;
+	num_cmds = 0;
+	while (num_cmds < exec_params.num_cmds - 1)
 	{
-		pipe(pipes + i * 2);
-		i++;
+		pipe(exec_params.pipes + num_cmds * 2);
+		num_cmds++;
 	}
-	current = cmds;
-	prev_fd = STDIN_FILENO;
-	i = 0;
-	while (current != NULL)
+	fork_commands(&exec_params);
+	num_cmds = 0;
+	while (num_cmds < exec_params.num_cmds - 1)
 	{
-		pids[i] = fork();
-		if (pids[i] == 0)
-			child_process(current, prev_fd, pipes, i, num_cmds, envp);
-		if (prev_fd != STDIN_FILENO)
-			close(prev_fd);
-		if (current->next != NULL)
-		{
-			close(pipes[i * 2 + 1]);
-			prev_fd = pipes[i * 2];
-		}
-		current = current->next;
-		i++;
+		close(exec_params.pipes[num_cmds * 2]);
+		num_cmds++;
 	}
-	i = 0;
-	while (i < num_cmds - 1)
-	{
-		close(pipes[i * 2]);
-		i++;
-	}
-	wait_children(pids, num_cmds);
-	free(pipes);
-	free(pids);
+	wait_children(exec_params.pids, exec_params.num_cmds);
+	free(exec_params.pipes);
+	free(exec_params.pids);
 }

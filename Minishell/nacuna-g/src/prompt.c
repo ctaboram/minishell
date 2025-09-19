@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 11:01:11 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/18 09:41:49 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/09/19 11:43:26 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,37 +28,34 @@ static char	*get_prompt(void)
 
 int ft_prompt(char ***envp)
 {
-    char *line;
-    t_token *tokens;
-    t_cmd *cmds;
+	char *line;
+	t_token *tokens;
+	t_cmd *cmds;
 
-    line = readline(get_prompt());
-    if (line == NULL)
-    {
-        printf("exit\n");
-        free(line);
-        return (0);
-    }
-    
-    if (*line != '\0')
-        add_history(line);
-    
-    // NO manejar exit aquí, que lo maneje el builtin
-    if (ft_strcmp(line, "") != 0)
-    {
-        tokens = tokenize(line);
-        if (tokens != NULL)
-        {
-            cmds = parse(tokens);
-            free_tokens(tokens);
-            if (cmds != NULL)
-            {
-                expand_cmd(cmds, *envp);
-                execute(cmds, envp);
-                free_cmd(cmds);
-            }
-        }
-    }
-    free(line);
-    return (1);
+	line = readline(get_prompt());
+	if (line == NULL)
+	{
+		printf("exit\n");
+		free(line);
+		return (0);
+	}
+	if (*line != '\0')
+		add_history(line);
+	if (ft_strcmp(line, "") != 0)
+	{
+		tokens = tokenize(line);
+		if (tokens != NULL)
+		{
+			cmds = parse(tokens);
+			free_tokens(tokens);
+			if (cmds != NULL)
+			{
+				expand_cmd(cmds, *envp);
+				execute(cmds, envp);
+				free_cmd(cmds);
+			}
+		}
+	}
+	free(line);
+	return (1);
 }
