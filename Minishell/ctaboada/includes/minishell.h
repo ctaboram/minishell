@@ -6,7 +6,7 @@
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 11:55:38 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/18 12:15:05 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/09/19 12:13:14 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,10 @@ int ft_builtin_cd(char **args);
 int ft_builting_echo(char **args);
 int ft_builtin_pwd(void);
 int ft_builtin_env(char **env);
-int ft_builtin_export(char **arg,char **env);
+char **ft_builtin_export(char **arg,char **env);
+int is_valid_identifier(char *arg);
+char **add_or_update_env(char **env, char *arg);
+
 
 // TOKENIZATION
 t_token *tokenize(char *line);

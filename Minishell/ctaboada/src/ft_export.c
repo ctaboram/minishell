@@ -6,7 +6,7 @@
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 12:01:25 by ctaboada          #+#    #+#             */
-/*   Updated: 2025/09/18 12:57:27 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/09/19 14:25:58 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void ft_free_env(char **env)
 	free(env);
 }
 
-static int	ft_export_print(char **env)
+static void	ft_export_print(char **env)
 {
 	int		i, count, key_len;
 	char	**sorted;
@@ -74,7 +74,7 @@ static int	ft_export_print(char **env)
 		count++;
 	sorted = dup_env(env); // ya la tienes implementada
 	if (!sorted)
-		return (1);
+		return;
 	ft_sort_env(sorted, count);
 	i = 0;
 	while (sorted[i])
@@ -90,33 +90,34 @@ static int	ft_export_print(char **env)
 		i++;
 	}
 	ft_free_env(sorted); // para liberar tu copia
-	return (0);
 }
 
 
-int ft_builtin_export(char **arg,char **env)
+/* Función principal de export */
+char **ft_builtin_export(char **arg, char **env)
 {
-	int		i;
-	int		return_status;
-	
-	i = 1;
-	return_status = 0;
-	if(!arg[1])
-		return (ft_export_print(env));
-	while(arg[i])
-	{
-		if(!is_valid_identifier(arg[i])) // funcion para comprobar que el argumento sea valido
-		{
-			printf("export: `%s': not a valid identifier\n", arg[i]);
-			return_status = 1;
-		}
-		else
-		{
-			env = add_or_update_env(env,arg[i]); //funcion para añadir o para actualizar el env
-			if(!env)
-				return(1);
-		}
-		i++;
-	}
-	return (return_status);
+    int i = 1;
+    char **new_env = NULL;
+
+    if (!arg[1])
+    {
+        ft_export_print(env);
+        return (env);
+    }
+
+    while (arg[i])
+    {
+        if (!is_valid_identifier(arg[i]))
+            printf("export: `%s': not a valid identifier\n", arg[i]);
+        else
+        {
+            new_env = add_or_update_env(env, arg[i]);
+            if (!new_env)
+                return (env); // fallo en malloc
+            env = new_env;
+        }
+        i++;
+    }
+
+    return (env);
 }

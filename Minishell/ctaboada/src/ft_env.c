@@ -6,7 +6,7 @@
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 10:42:31 by ctaboada          #+#    #+#             */
-/*   Updated: 2025/09/16 12:25:55 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/09/19 14:12:34 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,22 +32,31 @@ int ft_builtin_env(char **env)
 
 char **dup_env(char **env)
 {
-	int count;
-	int i;
-	char **copy;
+    int count;
+    char **new_env;
+    int i;
 
-	count = 0;
-	i = 0;
-	while(env && env[count])
-		count++;
-	copy = malloc((count + 1)*sizeof(char * ));
-	if(!copy)
-		return(NULL);
-	while(i < count)
-	{
-		copy[i] = ft_strdup(env[i]);
-		i++;
-	}
-	copy[count] = NULL;
-	return(copy);
+    if (!env)
+        return (NULL);
+    count = 0;
+    while (env[count])
+        count++;
+    new_env = (char **)malloc((count + 1) * sizeof(char *));
+    if (!new_env)
+        return (NULL);
+    i = 0;
+    while (i < count)
+    {
+        new_env[i] = ft_strdup(env[i]);
+        if (!new_env[i])
+        {
+            while (--i >= 0)
+                free(new_env[i]);
+            free(new_env);
+            return (NULL);
+        }
+        i++;
+    }
+    new_env[count] = NULL;
+    return (new_env);
 }
