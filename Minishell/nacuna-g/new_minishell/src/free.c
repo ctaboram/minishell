@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/24 12:05:29 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/26 12:15:11 by nacuna-g         ###   ########.fr       */
+/*   Created: 2025/09/25 12:45:38 by nacuna-g          #+#    #+#             */
+/*   Updated: 2025/09/26 12:09:02 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int main(int ac, char **av, char **env)
+void	ft_free_array(char **array)
 {
-	t_data data;
+	int	i;
 
-	(void)ac;
-	(void)av;
-	printf(HEADER);
-	init_data(&data, env);
-	if (!data.env)
-		return (1);
-	while (1)
-		init_prompt(&data);
-	ft_free_array(data.env);
-	return (0);
+	if (array == NULL)
+		return ;
+	i = 0;
+	while (array[i] != NULL)
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
 }
