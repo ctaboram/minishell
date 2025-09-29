@@ -13,8 +13,10 @@ OBJ_DIR		= obj
 
 SRCS		=	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/prompt.c \
+				$(SRC_DIR)/tokenizer.c \
 				$(SRC_DIR)/utils.c \
 				$(SRC_DIR)/errors.c \
+				$(SRC_DIR)/free.c \
 
 OBJS		=	$(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 

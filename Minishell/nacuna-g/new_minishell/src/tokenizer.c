@@ -3,106 +3,84 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:33:17 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/26 12:14:54 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/09/29 15:35:41 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-t_token	*create_token(char *value, t_token_type type)
+static int handle_word(t_tokenizer *tokenizer, t_data *data)
 {
-	t_token *token;
+	char *value;
 
-	token = malloc(sizeof(t_token));
-	if (!token)
-		return (NULL);
-	token->value = ft_strdup(value);
-	if(!token->value)
+	while (*tokenizer->end && !ft_isspace(*tokenizer->end) &&
+			*tokenizer->end != '\'' && *tokenizer->end != '"')
+		tokenizer->end++;
+	if (tokenizer->end > tokenizer->start)
 	{
-		free(token);
-		return (NULL);
+		value = ft_strndup(tokenizer->start, tokenizer->end - tokenizer->start);
+		if (!value)
+			return (ERR_MEMORY_ALLOC);
+		add_token(&data->tokens, create_token(value, TOKEN_WORD));
+		free(value);
 	}
-	token->type = type;
-	token->next = NULL;
-	return (token);
+	tokenizer->start = tokenizer->end;
+	return (ERR_OK);
 }
 
-void	add_token(t_token **tokens, t_token *token)
+static int handle_quote(t_tokenizer *tokenizer, t_data *data, char quote)
 {
-	t_token *current;
-	
-	if (!token)
-		return ;
-	if (!tokens)
-	{
-		*tokens = token;
-		token->next = NULL;
-		return ;
-	}
-	else
-	{
-		current = *tokens;
-		while (current->next)
-			current = current->next;
-		current->next = token;
-		token->next = NULL;
-	}
-}
+	char *value;
 
-static void	handle_quote(t_tokenizer tokenizer, t_data *data, char *quote)
-{
-	t_tokenizer	result;
-	char		*value;
-
-	result.start = tokenizer.start;
-	result.end = tokenizer.end + 1;
-	while (*result.end && *result.end != quote)
-		result.end++;
-	if (*result.end != quote)
+	tokenizer->end++;
+	while (*tokenizer->end && *tokenizer->end != quote)
+		tokenizer->end++;
+	if (*tokenizer->end != quote)
 	{
-		ft_print_error(data, ERR_UNCLOSED_QUOTE, &data->exit_status);
-		result.start = result.end;
-		return (result);
+		tokenizer->start = tokenizer->end;
+		return (ERR_UNCLOSED_QUOTE);
 	}
-	value = ft_strndup(tokenizer.start, result.end - tokenizer.start + 1);
+	value = ft_strndup(tokenizer->start, tokenizer->end - tokenizer->start + 1);
 	if (!value)
 	{
 		free_tokens(data->tokens);
 		data->tokens = NULL;
-		ft_print_error(data, ERR_MEMORY_ALLOC, &data->exit_status);
-		result.start = result.end;
-		return (result);
+		tokenizer->start = tokenizer->end;
+		return (ERR_MEMORY_ALLOC);
 	}
 	if (quote == '\'')
 		add_token(&data->tokens, create_token(value, TOKEN_QUOTE_SINGLE));
 	else
 		add_token(&data->tokens, create_token(value, TOKEN_QUOTE_DOUBLE));
-	free (value);
-	result.end++;
-	result.start = result.end;
-	return (result);
-	
+	free(value);
+	tokenizer->end++;
+	tokenizer->start = tokenizer->end;
+	return (ERR_OK);
 }
 
-void	tokenizer(t_data *data)
+int	tokenizer(t_data *data, t_tokenizer	*tokenizer)
 {
-	t_tokenizer	tokenizer;
+	char		*value;
+	int			status;
 
-	tokenizer.start = data->input;
-	while (*tokenizer.start)
+	tokenizer->start = data->input;
+	status = 0;
+	while (*tokenizer->start)
 	{
-		while (*tokenizer.start && ft_isspace(*tokenizer.start))
-			tokenizer.start++;
-		if (!*tokenizer.start)
+		while (*tokenizer->start && ft_isspace(*tokenizer->start))
+			tokenizer->start++;
+		if (!*tokenizer->start)
 			break ;
-		tokenizer.end = tokenizer.start;
-		if (*tokenizer.end == '\'' || *tokenizer.end == '"')
-			handle_quote(tokenizer , data, *tokenizer.end);
+		tokenizer->end = tokenizer->start;
+		if (*tokenizer->end == '\'' || *tokenizer->end == '"')
+			status = handle_quote(tokenizer , data, *tokenizer->end);
 		else
-			tokenizer.start++;
+			status = handle_word(tokenizer, data);
+		if(status)
+			return (status);
 	}
-	return ;
+	return (ERR_OK);
 }

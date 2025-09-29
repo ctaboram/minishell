@@ -3,14 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:49:06 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/26 12:06:03 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/09/29 13:15:45 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+void	ft_fatal_error(char *msg)
+{
+	ft_putendl_fd(msg, 1);
+	exit(EXIT_FAILURE);
+}
 
 void ft_print_error(t_data *data, int error, int *exit_status)
 {
@@ -26,7 +32,7 @@ void ft_print_error(t_data *data, int error, int *exit_status)
 	else if (error == ERR_COPY_FAILED)
 	{
 		printf("Error: copying env\n");
-		while (data->env[i] != NULL)
+		while (data->env[i])
 			free(data->env[i++]);
 		free(data->env);
 		data->env = NULL;
@@ -41,4 +47,5 @@ void ft_print_error(t_data *data, int error, int *exit_status)
 		*exit_status = 2;
 		return ;
 	}
+	
 }

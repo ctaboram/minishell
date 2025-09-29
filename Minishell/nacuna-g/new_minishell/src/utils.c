@@ -3,23 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:42:58 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/26 12:15:04 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/09/29 15:36:38 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
-
-void init_data(t_data *data, char **env)
-{
-	data->tokens = NULL;
-	data->exit_status = 0;
-	data->env = NULL;
-	cpy_env(data, env);
-    return ;
-}
+#include "../includes/minishell.h"\
 
 static void	cpy_env(t_data *data, char **env)
 {
@@ -30,17 +21,26 @@ static void	cpy_env(t_data *data, char **env)
 		i++;
 	data->env = malloc(sizeof(char *) * (i + 1));
 	if (!data->env)
-		ft_print_error(data, ERR_MEMORY_ALLOC, &data->exit_status);
+		ft_fatal_error("Error allocating memory for env");
 	i = 0;
 	while (env[i])
 	{
 		data->env[i] = ft_strdup(env[i]);
 		if (!data->env[i])
-			ft_print_error(data, ERR_COPY_FAILED, &data->exit_status);
+			ft_fatal_error("Error duplicating env string");
 		i++;
 	}
 	data->env[i] = NULL;
-	return ;
+}
+
+void	init_data(t_data *data, char **env)
+{
+	data->tokens = NULL;
+	data->exit_status = 0;
+	data->tokenizer->start = NULL;
+	data->tokenizer->end = NULL;
+	data->env = NULL;
+	cpy_env(data, env);
 }
 
 void	free_tokens(t_token *tokens)

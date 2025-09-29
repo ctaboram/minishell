@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:39:52 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/26 12:14:00 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/09/29 15:34:25 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,11 @@
 \t\t--- \033[1;36mctaboada\033[0m && \033[1;36mnacuna-g\033[0m --- \n\
 \n"
 
-#define ERR_MEMORY_ALLOC	1
-#define ERR_COPY_FAILED		2
-#define ERR_UNCLOSED_QUOTE	3
+typedef enum e_error {
+    ERR_OK = 0,
+    ERR_MEMORY_ALLOC,
+    ERR_UNCLOSED_QUOTE
+} t_error;
 
 typedef enum e_token_type
 {
@@ -70,30 +72,38 @@ typedef struct s_token
 	struct s_token	*next;
 }	t_token;
 
-typedef struct s_data
-{
-	char	**env;
-	char	*input;
-	t_token	*tokens;
-	int		exit_status;
-}	t_data;
-
 typedef struct s_tokenizer
 {
 	char	*start;
 	char	*end;
 }	t_tokenizer;
 
+typedef struct s_data
+{
+	char		**env;
+	char		*input;
+	t_token		*tokens;
+	t_tokenizer	*tokenizer;
+	int			exit_status;
+}	t_data;
 
 // PROMPT FUNCTIONS
-void	init_prompt(t_data *data);
+int	init_prompt(t_data *data);
 
 // UTILS FUNCTIONS
 void	init_data(t_data *data, char **env);
 void	free_tokens(t_token *tokens);
 
+// TOKENIZER FUNCTIONS
+int	tokenizer(t_data *data, t_tokenizer	*tokenizer);
+
+// UTILS_TOKENIZER FUNCTION
+t_token	*create_token(char *value, t_token_type type);
+void	add_token(t_token **tokens, t_token *token);
+
 // ERROR FUNCTIONS
-void ft_print_error(t_data *data, int error, int *exit_status);
+void	ft_fatal_error(char *msg);
+void	ft_print_error(t_data *data, int error, int *exit_status);
 
 // FREE FUNCTIONS
 void	ft_free_array(char **array);
