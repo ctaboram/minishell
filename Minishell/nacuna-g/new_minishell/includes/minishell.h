@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:39:52 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/29 15:34:25 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/09/30 11:23:31 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,26 +42,30 @@
 \t\t--- \033[1;36mctaboada\033[0m && \033[1;36mnacuna-g\033[0m --- \n\
 \n"
 
+typedef enum e_prompt {
+	PROMPT_CONTINUE = 0,
+	PROMPT_EOF,
+	PROMPT_EXIT
+} t_prompt;
+
 typedef enum e_error {
-    ERR_OK = 0,
-    ERR_MEMORY_ALLOC,
-    ERR_UNCLOSED_QUOTE
+	ERR_OK = 0,
+	ERR_MEMORY_ALLOC,
+	ERR_UNCLOSED_QUOTE,
+	ERR_SYNTAX_PIPE,
+	ERR_SYNTAX_REDIR
 } t_error;
 
 typedef enum e_token_type
 {
-	TOKEN_WORD,
-	TOKEN_PIPE,
-	TOKEN_REDIRECT_IN,
-	TOKEN_REDIRECT_OUT,
-	TOKEN_APPEND,
-	TOKEN_HEREDOC,
-	TOKEN_AND,
-	TOKEN_OR,
-	TOKEN_PAREN_OPEN,
-	TOKEN_PAREN_CLOSE,
 	TOKEN_QUOTE_SINGLE,
 	TOKEN_QUOTE_DOUBLE,
+	TOKEN_PIPE,
+	TOKEN_WORD,
+	TOKEN_REDIR_IN,
+	TOKEN_REDIR_OUT,
+	TOKEN_REDIR_APPEND,
+	TOKEN_HEREDOC,
 	TOKEN_EOF
 }	t_token_type;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:07:18 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/29 15:28:30 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/09/30 09:50:43 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,15 @@ static char	*get_prompt(void)
 
 int	init_prompt(t_data *data)
 {
+	int status;
+
+	status = 0;
 	data->input = readline(get_prompt());
 	if (!data->input)
 	{
 		printf("exit\n");
 		free(data->input);
-		return (0);
+		return (PROMPT_EOF);
 	}
 	if (*data->input != '\0')
 		add_history(data->input);
@@ -41,14 +44,20 @@ int	init_prompt(t_data *data)
 	{
 		printf("exit\n");
 		free(data->input);
-		return (0);
+		return (PROMPT_EXIT);
 	}
 	if(ft_strcmp(data->input, ""))
 	{
-		tokenizer(data, data->tokenizer);
+		status = tokenizer(data, data->tokenizer);
+		if (status)
+			ft_errors();	// FUNCION PARA FT_ERROR
+							// 	if (status == ERR_SYNTAX_PIPE)
+							// 		printf("minishell: syntax error near unexpected token `|'\n");
+
 		free_tokens(data->tokens);
 		data->tokens = NULL;
 	}
 	free(data->input);
-	return (1);
+	return (PROMPT_CONTINUE);
 }
+
