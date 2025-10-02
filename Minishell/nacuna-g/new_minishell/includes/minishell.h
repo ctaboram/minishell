@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:39:52 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/30 11:23:31 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/02 09:54:40 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,20 @@ typedef struct s_token
 	struct s_token	*next;
 }	t_token;
 
+typedef struct s_cmd {
+	char			**av;         // argumentos (argv[0] = comando)
+	char			*redir_in;      // archivo de entrada
+	char			*redir_out;     // archivo de salida
+	int				append;         // 1 si >>
+	struct s_cmd	*next;          // siguiente comando si hay pipe
+}	t_cmd;
+
+typedef struct s_parser {
+	t_token	*current;   // token actual
+	t_cmd	*head;      // cabeza de la lista de comandos
+	t_cmd	*cmd;       // comando actual
+} t_parser;
+
 typedef struct s_tokenizer
 {
 	char	*start;
@@ -94,16 +108,24 @@ typedef struct s_data
 // PROMPT FUNCTIONS
 int	init_prompt(t_data *data);
 
-// UTILS FUNCTIONS
-void	init_data(t_data *data, char **env);
-void	free_tokens(t_token *tokens);
-
 // TOKENIZER FUNCTIONS
 int	tokenizer(t_data *data, t_tokenizer	*tokenizer);
 
-// UTILS_TOKENIZER FUNCTION
+// UTILS_TOKENIZER FUNCTIONS
 t_token	*create_token(char *value, t_token_type type);
 void	add_token(t_token **tokens, t_token *token);
+
+// PARSER FUNCTIONS
+t_cmd	*parser_tokens(t_token *tokens);
+
+// UTILS_PARSER FUNCTIONS
+void	append_arg(t_cmd *cmd, char *value);
+t_cmd	*new_cmd(void);
+
+// UTILS FUNCTIONS
+void	init_parser(t_parser *parser, t_token *tokens);
+void	init_data(t_data *data, char **env);
+void	free_tokens(t_token *tokens);
 
 // ERROR FUNCTIONS
 void	ft_fatal_error(char *msg);

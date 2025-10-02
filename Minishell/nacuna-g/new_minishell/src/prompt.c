@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:07:18 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/30 09:50:43 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/01 09:59:43 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	init_prompt(t_data *data)
 			ft_errors();	// FUNCION PARA FT_ERROR
 							// 	if (status == ERR_SYNTAX_PIPE)
 							// 		printf("minishell: syntax error near unexpected token `|'\n");
-
+		
 		free_tokens(data->tokens);
 		data->tokens = NULL;
 	}

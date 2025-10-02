@@ -3,14 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:42:58 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/29 15:36:38 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/01 12:16:41 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"\
+
+void init_parser(t_parser *parser, t_token *tokens)
+{
+	parser->current = tokens;
+	parser->head = new_cmd();
+	parser->cmd = parser->head;
+}
 
 static void	cpy_env(t_data *data, char **env)
 {
