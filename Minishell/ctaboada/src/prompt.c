@@ -6,7 +6,7 @@
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 11:01:11 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/19 12:08:47 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/10/02 12:11:44 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ int ft_prompt(char **dup_env)
 				ft_builtin_env(dup_env);  // Usar dup_env en lugar de environ
 			else if(ft_strcmp(words[0],"export") == 0)
 				dup_env = ft_builtin_export(words,dup_env);  // Actualizar dup_env con el retorno
+			else if(ft_strcmp(words[0],"unset") == 0)
+				dup_env = ft_builtin_unset(words,dup_env);
 			// Aquí puedes agregar la lógica para ejecutar el comando real
 			// Por ahora, no mostramos nada en pantalla
 		}

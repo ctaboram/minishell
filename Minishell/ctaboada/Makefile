@@ -10,6 +10,7 @@ LIBFT_A		= $(LIBFT_DIR)/libft.a
 
 SRC_DIR		= src
 OBJ_DIR		= obj
+EXP_DIR		= export
 
 SRCS		=	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/prompt.c \
@@ -17,8 +18,9 @@ SRCS		=	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/ft_echo.c \
 				$(SRC_DIR)/ft_pwd.c \
 				$(SRC_DIR)/ft_env.c \
-				$(SRC_DIR)/ft_export.c \
-				$(SRC_DIR)/ft_utils_export.c \
+				$(SRC_DIR)/$(EXP_DIR)/ft_export.c \
+				$(SRC_DIR)/$(EXP_DIR)/ft_utils_export.c \
+				$(SRC_DIR)/ft_unset.c \
 				$(SRC_DIR)/tokenizacion.c \
 
 
@@ -42,7 +44,7 @@ $(NAME): $(OBJS) $(LIBFT_A)
 	@echo "$(GREEN)Compilation complete$(RESET)"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(MINISHELL_H) $(LIBFT_H)
-	mkdir -p $(OBJ_DIR)
+	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
 
 $(LIBFT_A):

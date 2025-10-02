@@ -6,20 +6,21 @@
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 11:55:49 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/18 12:29:14 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/09/23 13:16:49 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-	extern char **environ;
-int main(void)
+
+int main(int ac, char **av, char **env)
 {
+	(void)ac;
+	(void)av;
 	char **g_env;
 	
-	g_env = dup_env(environ);
+	g_env = dup_env(env);
 	printf(HEADER);
-	while (ft_prompt( g_env))
+	while (ft_prompt(g_env))
 		;
-	ft_free_env(g_env);
 	return (0);
 }

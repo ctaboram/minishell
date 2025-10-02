@@ -6,7 +6,7 @@
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 10:42:31 by ctaboada          #+#    #+#             */
-/*   Updated: 2025/09/19 14:12:34 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/09/23 13:11:34 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int ft_builtin_env(char **env)
 		perror("env");
 		return(1);
 	}
-	while(env[i] != NULL)
+	while(env[i] && env)
 	{
 		printf("%s\n",env[i]);
 		i++;
