@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:33:17 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/30 12:50:34 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/03 11:26:23 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static int	handle_redirect_out(t_tokenizer *tokenizer, t_data *data)
 {
 	if (!data->tokens || data->tokens->type == TOKEN_PIPE)
-		return (ERR_SYNTAX_REDIR);
+		return (TOK_SYNTAX_REDIR);
 	if (*(tokenizer->end + 1) == '>')
 	{
 		add_token(&data->tokens, create_token(">>", TOKEN_REDIR_APPEND));
@@ -27,15 +27,15 @@ static int	handle_redirect_out(t_tokenizer *tokenizer, t_data *data)
 		tokenizer->end++;
 	}
 	if (*tokenizer->end == '\0')
-		return (ERR_SYNTAX_REDIR);
+		return (TOK_SYNTAX_REDIR);
 	tokenizer->start = tokenizer->end;
-	return (ERR_OK);
+	return (TOK_OK);
 }
 
 static int	handle_redirect_in(t_tokenizer *tokenizer, t_data *data)
 {
 	if (!data->tokens || data->tokens->type == TOKEN_PIPE)
-		return (ERR_SYNTAX_REDIR);
+		return (TOK_SYNTAX_REDIR);
 	if (*(tokenizer->end + 1) == '<')
 	{
 		add_token(&data->tokens, create_token("<<", TOKEN_HEREDOC));
@@ -47,21 +47,21 @@ static int	handle_redirect_in(t_tokenizer *tokenizer, t_data *data)
 		tokenizer->end++;
 	}
 	if (*tokenizer->end == '\0')
-		return (ERR_SYNTAX_REDIR);
+		return (TOK_SYNTAX_REDIR);
 	tokenizer->start = tokenizer->end;
-	return (ERR_OK);
+	return (TOK_OK);
 }
 
 static int	handle_pipe(t_tokenizer *tokenizer, t_data *data)
 {
 	if (!data->tokens || data->tokens->type == TOKEN_PIPE)
-		return (ERR_SYNTAX_PIPE);
+		return (TOK_SYNTAX_PIPE);
 	tokenizer->end++;
 	if (*tokenizer->end == '\0')
-		return (ERR_SYNTAX_PIPE);
+		return (TOK_SYNTAX_PIPE);
 	add_token(&data->tokens, create_token("|", TOKEN_PIPE));
 	tokenizer->start = tokenizer->end;
-	return (ERR_OK);
+	return (TOK_OK);
 }
 
 static int	handle_word(t_tokenizer *tokenizer, t_data *data)
@@ -75,12 +75,12 @@ static int	handle_word(t_tokenizer *tokenizer, t_data *data)
 	{
 		value = ft_strndup(tokenizer->start, tokenizer->end - tokenizer->start);
 		if (!value)
-			return (ERR_MEMORY_ALLOC);
+			return (TOK_MEMORY_ALLOC);
 		add_token(&data->tokens, create_token(value, TOKEN_WORD));
 		free(value);
 	}
 	tokenizer->start = tokenizer->end;
-	return (ERR_OK);
+	return (TOK_OK);
 }
 
 static int	handle_quote(t_tokenizer *tokenizer, t_data *data, char quote)
@@ -93,7 +93,7 @@ static int	handle_quote(t_tokenizer *tokenizer, t_data *data, char quote)
 	if (*tokenizer->end != quote)
 	{
 		tokenizer->start = tokenizer->end;
-		return (ERR_UNCLOSED_QUOTE);
+		return (TOK_UNCLOSED_QUOTE);
 	}
 	value = ft_strndup(tokenizer->start + 1, tokenizer->end - tokenizer->start - 1);
 	if (!value)
@@ -101,7 +101,7 @@ static int	handle_quote(t_tokenizer *tokenizer, t_data *data, char quote)
 		free_tokens(data->tokens);
 		data->tokens = NULL;
 		tokenizer->start = tokenizer->end;
-		return (ERR_MEMORY_ALLOC);
+		return (TOK_MEMORY_ALLOC);
 	}
 	if (quote == '\'')
 		add_token(&data->tokens, create_token(value, TOKEN_QUOTE_SINGLE));
@@ -110,7 +110,7 @@ static int	handle_quote(t_tokenizer *tokenizer, t_data *data, char quote)
 	free(value);
 	tokenizer->end++;
 	tokenizer->start = tokenizer->end;
-	return (ERR_OK);
+	return (TOK_OK);
 }
 
 int	tokenizer(t_data *data, t_tokenizer	*tokenizer)
@@ -141,5 +141,5 @@ int	tokenizer(t_data *data, t_tokenizer	*tokenizer)
 			return (status);
 	}
 	add_token(&data->tokens, create_token(NULL, TOKEN_EOF));
-	return (ERR_OK);
+	return (TOK_OK);
 }

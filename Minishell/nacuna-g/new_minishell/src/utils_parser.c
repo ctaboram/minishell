@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 12:29:46 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/02 09:51:03 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/03 13:06:32 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ t_cmd	*new_cmd(void)
 	cmd->av = NULL;
 	cmd->redir_in = NULL;
 	cmd->redir_out = NULL;
-	cmd->append = 0;
+	cmd->is_append = 0;
 	cmd->next = NULL;
 	return cmd;
 }
 
-void	append_arg(t_cmd *cmd, char *value)
+int	append_arg(t_cmd *cmd, char *value)
 {
 	int		i;
 	int		j;
@@ -39,11 +39,17 @@ void	append_arg(t_cmd *cmd, char *value)
 		i++;
 	new_av = malloc(sizeof(char *) * (i + 2));
 	if (!new_av)
-		return ;
+		return (PARSER_MEMORY_ALLOC);
 	while (++j < i)
 		new_av[j] = cmd->av[j];
 	new_av[i] = ft_strdup(value);
+	if (!new_av[i])
+	{
+		free(new_av);
+		return (PARSER_MEMORY_ALLOC);
+	}
 	new_av[i + 1] = NULL;
 	free (cmd->av);
 	cmd->av = new_av;
+	return (PARSER_OK);
 }

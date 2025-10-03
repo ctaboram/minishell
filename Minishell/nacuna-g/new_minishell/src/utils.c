@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:42:58 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/01 12:16:41 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/03 09:41:47 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,19 +48,4 @@ void	init_data(t_data *data, char **env)
 	data->tokenizer->end = NULL;
 	data->env = NULL;
 	cpy_env(data, env);
-}
-
-void	free_tokens(t_token *tokens)
-{
-	t_token	*current;
-	t_token	*next;
-
-	current = tokens;
-	while (current)
-	{
-		next = current->next;
-		free(current->value);
-		free(current);
-		current = next;
-	}
 }

@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:39:52 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/02 09:54:40 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/03 13:16:34 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,19 +42,29 @@
 \t\t--- \033[1;36mctaboada\033[0m && \033[1;36mnacuna-g\033[0m --- \n\
 \n"
 
-typedef enum e_prompt {
+typedef enum e_prompt
+{
 	PROMPT_CONTINUE = 0,
 	PROMPT_EOF,
 	PROMPT_EXIT
-} t_prompt;
+}	t_prompt;
 
-typedef enum e_error {
-	ERR_OK = 0,
-	ERR_MEMORY_ALLOC,
-	ERR_UNCLOSED_QUOTE,
-	ERR_SYNTAX_PIPE,
-	ERR_SYNTAX_REDIR
-} t_error;
+typedef enum e_tokenizer_error
+{
+	TOK_OK = 0,
+	TOK_MEMORY_ALLOC,
+	TOK_UNCLOSED_QUOTE,
+	TOK_SYNTAX_PIPE,
+	TOK_SYNTAX_REDIR
+}	t_tokenizer_errors;
+
+typedef enum e_parser_error
+{
+	PARSER_OK = 0,
+	PARSER_SYNTAX_REDIR,
+	PARSER_SYNTAX_PIPE,
+	PARSER_MEMORY_ALLOC,
+}	t_parser_error;
 
 typedef enum e_token_type
 {
@@ -76,19 +86,21 @@ typedef struct s_token
 	struct s_token	*next;
 }	t_token;
 
-typedef struct s_cmd {
-	char			**av;         // argumentos (argv[0] = comando)
-	char			*redir_in;      // archivo de entrada
-	char			*redir_out;     // archivo de salida
-	int				append;         // 1 si >>
-	struct s_cmd	*next;          // siguiente comando si hay pipe
+typedef struct s_cmd
+{
+	char			**av;			// argumentos (argv[0] = comando)
+	char			*redir_in;		// archivo de entrada
+	char			*redir_out;		// archivo de salida
+	int				is_append;		// 1 si >>
+	struct s_cmd	*next;			// siguiente comando si hay pipe
 }	t_cmd;
 
-typedef struct s_parser {
-	t_token	*current;   // token actual
-	t_cmd	*head;      // cabeza de la lista de comandos
-	t_cmd	*cmd;       // comando actual
-} t_parser;
+typedef struct s_parser
+{
+	t_token	*current;	// token actual
+	t_cmd	*head;		// cabeza de la lista de comandos
+	t_cmd	*cmd;		// comando actual
+}	t_parser;
 
 typedef struct s_tokenizer
 {
@@ -102,24 +114,25 @@ typedef struct s_data
 	char		*input;
 	t_token		*tokens;
 	t_tokenizer	*tokenizer;
+	t_cmd		*cmds_list;
 	int			exit_status;
 }	t_data;
 
 // PROMPT FUNCTIONS
-int	init_prompt(t_data *data);
+int		init_prompt(t_data *data);
 
 // TOKENIZER FUNCTIONS
-int	tokenizer(t_data *data, t_tokenizer	*tokenizer);
+int		tokenizer(t_data *data, t_tokenizer *tokenizer);
 
 // UTILS_TOKENIZER FUNCTIONS
 t_token	*create_token(char *value, t_token_type type);
 void	add_token(t_token **tokens, t_token *token);
 
 // PARSER FUNCTIONS
-t_cmd	*parser_tokens(t_token *tokens);
+int		parser_tokens(t_data *data);
 
 // UTILS_PARSER FUNCTIONS
-void	append_arg(t_cmd *cmd, char *value);
+int	append_arg(t_cmd *cmd, char *value);
 t_cmd	*new_cmd(void);
 
 // UTILS FUNCTIONS
@@ -129,7 +142,6 @@ void	free_tokens(t_token *tokens);
 
 // ERROR FUNCTIONS
 void	ft_fatal_error(char *msg);
-void	ft_print_error(t_data *data, int error, int *exit_status);
 
 // FREE FUNCTIONS
 void	ft_free_array(char **array);
