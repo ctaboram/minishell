@@ -44,7 +44,7 @@ $(NAME): $(OBJS) $(LIBFT_A)
 	@echo "$(GREEN)Compilation complete$(RESET)"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(MINISHELL_H) $(LIBFT_H)
-	mkdir -p $(dir $@)
+	if not exist "$(dir $@)" mkdir "$(dir $@)"
 	$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
 
 $(LIBFT_A):
@@ -54,12 +54,12 @@ $(LIBFT_A):
 
 clean:
 	@echo "$(RED)Eliminando obj...$(RESET)"
-	rm -rf $(OBJ_DIR)
+	if exist "$(OBJ_DIR)" rmdir /s /q "$(OBJ_DIR)"
 	$(MAKE) --no-print-directory -C $(LIBFT_DIR) clean
 
 fclean: clean
 	@echo "$(RED)Eliminando $(NAME)...$(RESET)"
-	rm -f $(NAME)
+	if exist "$(NAME)" del "$(NAME)"
 	$(MAKE) --no-print-directory -C $(LIBFT_DIR) fclean
 
 re: fclean all

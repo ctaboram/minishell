@@ -68,19 +68,22 @@
 	free(env);
 	}
 
-	void ft_export_print(char **env)
-	{
-	int i;
-	char **sorted;
-	char *equal;
-	char *key;
+void ft_export_print(char **env)
+{
+int i;
+char **sorted;
+char *equal;
+char *key;
 
-	if (!env)
-		return;
+if (!env)
+	return;
 
-	sorted = dup_env(env);
-	if (!sorted)
-		return;
+sorted = dup_env(env);
+if (!sorted)
+{
+	printf("export: memory allocation failed\n");
+	return;
+}
 
 	i = 0;
 	while (sorted[i])
@@ -107,47 +110,52 @@
 	ft_free_env(sorted);
 	}
 
-	char **ft_builtin_export(char **arg, char **env)
-	{
-	int i = 1;
-	char **new_env = NULL;
-	char **old_env = env;
-	char **env_copy = NULL;
+char **ft_builtin_export(char **arg, char **env)
+{
+int i = 1;
+char **new_env = env;
+char **old_env = env;
+char **env_copy = NULL;
 
-	if (!arg[1])
+if (!arg || !env)
+	return (env);
+
+if (!arg[1])
+{
+	env_copy = dup_env(env);
+	if (!env_copy)
 	{
-		env_copy = dup_env(env);
-		if (!env_copy)
-		{
-			printf("export: failed to duplicate environment\n");
-			return (env);
-		}
-		ft_export_print(env_copy);
-		ft_free_env(env_copy);
+		printf("export: failed to duplicate environment\n");
 		return (env);
 	}
+	ft_export_print(env_copy);
+	ft_free_env(env_copy);
+	return (env);
+}
 
-	while (arg[i])
+while (arg[i])
+{
+	if (!is_valid_identifier(arg[i]))
+		printf("export: `%s': not a valid identifier\n", arg[i]);
+	else
 	{
-		if (!is_valid_identifier(arg[i]))
-			printf("export: `%s': not a valid identifier\n", arg[i]);
-		else
+		new_env = add_or_update_env(new_env, arg[i]);
+		if (!new_env)
 		{
-			new_env = add_or_update_env(env, arg[i]);
-			if (!new_env)
-			{
-				printf("export: failed to add/update variable\n");
-				return (env);
-			}
-			if (new_env != env)
-			{
-				old_env = env;
-				env = new_env;
-				ft_free_env(old_env);
-			}
+			printf("export: failed to add/update variable\n");
+			new_env = env;
+			break;
 		}
-		i++;
+		if (new_env != env)
+		{
+			old_env = env;
+			env = new_env;
+			if (old_env != env)
+				ft_free_env(old_env);
+		}
 	}
+	i++;
+}
 
-	return (new_env);
+return (new_env);
 	}
