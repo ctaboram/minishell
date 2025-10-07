@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:07:18 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/03 11:28:55 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/07 11:53:13 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,30 @@ int	init_prompt(t_data *data)
 	{
 		status = tokenizer(data, data->tokenizer);
 		if (status)
-			ft_errors();	// FUNCION PARA FT_ERROR
-							// 	if (status == ERR_SYNTAX_PIPE)
-							// 		printf("minishell: syntax error near unexpected token `|'\n");
+		{
+			ft_tokenizer_error(status);	// FUNCION PARA FT_ERROR
+									// 	if (status == ERR_SYNTAX_PIPE)
+									// 		printf("minishell: syntax error near unexpected token `|'\n");
+			return (PROMPT_CONTINUE);
+		}
+		// status = expand_word();
+		// if (status)
+		// {
+		// 	ft_expand_error();
+		// 	return (PROMPT_CONTINUE);
+		// }
 		status = parser_tokens(data);
 		if (status)
-			ft_errors();
+		{
+			ft_parser_error(status, data->tokens);
+			return (PROMPT_CONTINUE);
+		}
+		status = executor();
+		if (status)
+		{
+			ft_executor_error(status, data->tokens);
+			return (PROMPT_CONTINUE);
+		}
 		ft_free_all();		// free_tokens(data->tokens);
 							// data->tokens = NULL;
 							// free_cmds(data->cmds);

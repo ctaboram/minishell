@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:39:52 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/03 13:16:34 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/06 11:04:56 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ typedef enum e_token_type
 
 typedef struct s_token
 {
-	char			*value;
+	char			*value; 
 	t_token_type	type;
 	struct s_token	*next;
 }	t_token;

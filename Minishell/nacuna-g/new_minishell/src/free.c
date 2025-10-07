@@ -6,13 +6,13 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 12:45:38 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/03 09:42:03 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/06 09:47:09 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void free_cmds(t_cmd *cmd)
+void ft_free_cmds(t_cmd *cmd)
 {
 	t_cmd *tmp;
 
@@ -34,7 +34,7 @@ void free_cmds(t_cmd *cmd)
 }
 
 
-void	free_tokens(t_token *tokens)
+void	ft_free_tokens(t_token *tokens)
 {
 	t_token	*current;
 	t_token	*next;

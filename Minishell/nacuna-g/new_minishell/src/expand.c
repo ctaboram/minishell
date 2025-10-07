@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/24 12:05:29 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/06 09:50:00 by nacuna-g         ###   ########.fr       */
+/*   Created: 2025/10/07 11:50:45 by nacuna-g          #+#    #+#             */
+/*   Updated: 2025/10/07 13:14:36 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	main(int ac, char **av, char **env)
+char	*expand_word(char *word)
 {
-	t_data	data;
+	char	*result;
+	int		i;
 
-	(void)ac;
-	(void)av;
-	printf(HEADER);
-	init_data(&data, env);
-	while (1)
+	result = malloc(sizeof(char) * 1);
+	i = 0;
+	while (word[i])
 	{
-		if(init_prompt(&data))
-			break ;
+		if (word[i] == '$')
+		{
+			i++;
+			
+		}
 	}
-	ft_free_array(data.env);
-	return (0);
 }
