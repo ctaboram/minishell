@@ -6,7 +6,7 @@
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 11:55:49 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/23 13:16:49 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/10/06 12:04:21 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,19 @@ int main(int ac, char **av, char **env)
 {
 	(void)ac;
 	(void)av;
-	char **g_env;
-	
-	g_env = dup_env(env);
+	t_data data;  // Usamos la estructura t_data
+
+	data.env = dup_env(env);  // Inicializamos el env
+	data.input = NULL;        // Inicializamos otros campos
+	data.tokens = NULL;
+	data.exit_status = 0;
+
 	printf(HEADER);
-	while (ft_prompt(g_env))
+	while (ft_prompt(&data))  // Pasamos &data
 		;
-	return (0);
+
+	// Liberamos recursos al final
+	ft_free_env(data.env);
+	// Si hay tokens o input pendientes, libéralos aquí (por ahora no)
+	return (data.exit_status);
 }

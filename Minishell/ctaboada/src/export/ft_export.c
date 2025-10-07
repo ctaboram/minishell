@@ -12,8 +12,8 @@
 
 	#include "../../includes/minishell.h"
 
-	static int ft_is_sorted(char **env, int count)
-	{
+static int ft_is_sorted(char **env, int count)
+{
 	int i;
 	if (!env)
 		return (1);
@@ -26,10 +26,10 @@
 		i++;
 	}
 	return (1);
-	}
+}
 
-	static void ft_sort_env(char **env, int count)
-	{
+static void ft_sort_env(char **env, int count)
+{
 	int i;
 	char *tmp;
 
@@ -50,10 +50,10 @@
 			i++;
 		}
 	}
-	}
+}
 
-	void ft_free_env(char **env)
-	{
+void ft_free_env(char **env)
+{
 	int i;
 
 	if (!env)
@@ -66,24 +66,24 @@
 		i++;
 	}
 	free(env);
-	}
+}
 
 void ft_export_print(char **env)
 {
-int i;
-char **sorted;
-char *equal;
-char *key;
+	int i;
+	char **sorted;
+	char *equal;
+	char *key;
 
-if (!env)
-	return;
+	if (!env)
+		return;
 
-sorted = dup_env(env);
-if (!sorted)
-{
-	printf("export: memory allocation failed\n");
-	return;
-}
+	sorted = dup_env(env);
+	if (!sorted)
+	{
+		printf("export: memory allocation failed\n");
+		return;
+	}
 
 	i = 0;
 	while (sorted[i])
@@ -108,54 +108,51 @@ if (!sorted)
 		i++;
 	}
 	ft_free_env(sorted);
-	}
+}
 
 char **ft_builtin_export(char **arg, char **env)
 {
-int i = 1;
-char **new_env = env;
-char **old_env = env;
-char **env_copy = NULL;
+	int i = 1;
+	char **new_env = env;
+	char **old_env = env;
+	char **env_copy = NULL;
 
-if (!arg || !env)
-	return (env);
+	if (!arg || !env)
+		return (env);
 
-if (!arg[1])
-{
-	env_copy = dup_env(env);
-	if (!env_copy)
+	if (!arg[1])
 	{
-		printf("export: failed to duplicate environment\n");
+		env_copy = dup_env(env);
+		if (!env_copy)
+		{
+			printf("export: failed to duplicate environment\n");
+			return (env);
+		}
+		ft_export_print(env_copy);
+		ft_free_env(env_copy);
 		return (env);
 	}
-	ft_export_print(env_copy);
-	ft_free_env(env_copy);
-	return (env);
-}
 
-while (arg[i])
-{
-	if (!is_valid_identifier(arg[i]))
-		printf("export: `%s': not a valid identifier\n", arg[i]);
-	else
+	while (arg[i])
 	{
-		new_env = add_or_update_env(new_env, arg[i]);
-		if (!new_env)
+		if (!is_valid_identifier(arg[i]))
+			printf("export: `%s': not a valid identifier\n", arg[i]);
+		else
 		{
-			printf("export: failed to add/update variable\n");
-			new_env = env;
-			break;
+			old_env = new_env;
+			new_env = add_or_update_env(new_env, arg[i]);
+			if (!new_env)
+			{
+				printf("export: failed to add/update variable\n");
+				new_env = old_env;
+			}
+			else if (new_env != old_env)
+			{
+				// Puedes agregar lógica aquí si es necesario (ej: free(old_env) pero ya se maneja en add_or_update_env)
+			}
 		}
-		if (new_env != env)
-		{
-			old_env = env;
-			env = new_env;
-			if (old_env != env)
-				ft_free_env(old_env);
-		}
+		i++;
 	}
-	i++;
-}
 
-return (new_env);
-	}
+	return (new_env);
+}

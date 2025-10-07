@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/10/06 10:59:55 by ctaboada          #+#    #+#              #
+#    Updated: 2025/10/06 11:00:48 by ctaboada         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 .SILENT:
 NAME		= minishell
 
@@ -44,7 +56,7 @@ $(NAME): $(OBJS) $(LIBFT_A)
 	@echo "$(GREEN)Compilation complete$(RESET)"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(MINISHELL_H) $(LIBFT_H)
-	if not exist "$(dir $@)" mkdir "$(dir $@)"
+	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
 
 $(LIBFT_A):
@@ -54,12 +66,12 @@ $(LIBFT_A):
 
 clean:
 	@echo "$(RED)Eliminando obj...$(RESET)"
-	if exist "$(OBJ_DIR)" rmdir /s /q "$(OBJ_DIR)"
+	rm -rf $(OBJ_DIR)
 	$(MAKE) --no-print-directory -C $(LIBFT_DIR) clean
 
 fclean: clean
 	@echo "$(RED)Eliminando $(NAME)...$(RESET)"
-	if exist "$(NAME)" del "$(NAME)"
+	rm -f $(NAME)
 	$(MAKE) --no-print-directory -C $(LIBFT_DIR) fclean
 
 re: fclean all

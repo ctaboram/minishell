@@ -6,9 +6,12 @@
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 11:55:38 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/23 12:47:58 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/10/07 11:57:13 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#ifndef MINISHELL_H
+# define MINISHELL_H
 
 #include "../includes/libft.h"
 #include <stdio.h>
@@ -56,14 +59,21 @@ typedef struct s_token {
     t_token_type type;    // El tipo de token
     struct s_token *next; // Puntero al siguiente token (lista enlazada)
 } t_token;
+typedef struct s_data
+{
+	char		**env;
+	char		*input;
+	t_token		*tokens;
+	int			exit_status;
+}	t_data;
 
 extern char **environ;
 
 // MAIN FUNCTIONS
-int ft_prompt(char ** dup_env);
+int ft_prompt(t_data *data);
 
 // BUILTINS
-int ft_builtin_cd(char **args);
+int ft_builtin_cd(char **args, t_data *data);
 int ft_builting_echo(char **args);
 int ft_builtin_pwd(void);
 int ft_builtin_env(char **env);
@@ -72,7 +82,7 @@ int is_valid_identifier(char *arg);
 char **add_or_update_env(char **env, char *arg);
 char	**ft_builtin_unset(char **args, char **env);    
 
-
+char **add_new_env(char **env, char *new_var);
 
 // TOKENIZATION
 t_token *tokenize(char *line);
@@ -82,3 +92,5 @@ t_token *create_token(char *value, t_token_type type);
 // UTILS
 char ** dup_env(char **env);
 void ft_free_env(char **env);
+
+#endif

@@ -12,8 +12,8 @@
 
 	#include "../../includes/minishell.h"
 
-	int is_valid_identifier(char *arg)
-	{
+int is_valid_identifier(char *arg)
+{
 	int i;
 
 	if (!arg || !arg[0] || (!ft_isalpha(arg[0]) && arg[0] != '_'))
@@ -27,10 +27,10 @@
 		i++;
 	}
 	return (1);
-	}
+}
 
-	static char **add_new_env(char **env, char *new_var)
-	{
+char **add_new_env(char **env, char *new_var)
+{
 	int count = 0;
 	char **new_env;
 	int i;
@@ -41,7 +41,6 @@
 	new_env = malloc((count + 2) * sizeof(char *));
 	if (!new_env)
 		return (NULL);
-
 	i = 0;
 	while (i < count)
 	{
@@ -55,7 +54,6 @@
 		}
 		i++;
 	}
-
 	new_env[count] = ft_strdup(new_var);
 	if (!new_env[count])
 	{
@@ -67,10 +65,10 @@
 	new_env[count + 1] = NULL;
 
 	return (new_env);
-	}
+}
 
-	char **add_or_update_env(char **env, char *var)
-	{
+char **add_or_update_env(char **env, char *var)
+{
 	int i = 0;
 	char *key;
 	char *equal_sign;
@@ -107,12 +105,8 @@
 	}
 
 	new_env = add_new_env(env, var);
-	if (!new_env)
-	{
-		free(key);
-		return (env);
-	}
-
 	free(key);
+	if (!new_env)
+		return (env);
 	return (new_env);
-	}
+}
