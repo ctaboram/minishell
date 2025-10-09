@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:07:18 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/07 11:53:13 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/09 11:56:07 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static char	*get_prompt(void)
 	return (prompt);
 }
 
-int	init_prompt(t_data *data)
+t_prompt_error	init_prompt(t_data *data)
 {
 	int status;
 
@@ -56,12 +56,12 @@ int	init_prompt(t_data *data)
 									// 		printf("minishell: syntax error near unexpected token `|'\n");
 			return (PROMPT_CONTINUE);
 		}
-		// status = expand_word();
-		// if (status)
-		// {
-		// 	ft_expand_error();
-		// 	return (PROMPT_CONTINUE);
-		// }
+		status = expand_word(data);
+		if (status)
+		{
+			ft_expand_error();
+			return (PROMPT_CONTINUE);
+		}
 		status = parser_tokens(data);
 		if (status)
 		{
@@ -80,5 +80,6 @@ int	init_prompt(t_data *data)
 							// data->cmds = NULL;
 	}
 	free(data->input);
+	free(data->input_expanded);
 	return (PROMPT_CONTINUE);
 }

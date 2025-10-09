@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 12:55:42 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/07 09:13:23 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/09 11:23:21 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static int	handle_redir_in_parser(t_parser *parser)
 	return (PARSER_OK);
 }
 
-int	parser_tokens(t_data *data)
+t_parser_error	parser_tokens(t_data *data)
 {
 	t_parser	parser;
 	int			status;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:33:17 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/03 11:26:23 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/09 11:23:15 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ static int	handle_quote(t_tokenizer *tokenizer, t_data *data, char quote)
 	return (TOK_OK);
 }
 
-int	tokenizer(t_data *data, t_tokenizer	*tokenizer)
+t_tokenizer_error	tokenizer(t_data *data, t_tokenizer	*tokenizer)
 {
 	char		*value;
 	int			status;

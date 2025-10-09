@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 11:22:55 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/18 12:43:15 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/09 10:59:58 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,6 @@ void	ft_putnbr_fd(int n, int fd);
 int		ft_strcmp(const char *s1, const char *s2);
 int		ft_isspace(int c);
 char	*ft_strndup(const char *s, size_t n);
-char	*ft_strjoin_free(char *s1, char *s2);
-void	ft_free_array(char **array);
 
 //	LIST STRUCT
 typedef struct s_list

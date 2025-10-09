@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:05:29 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/06 09:50:00 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/09 11:46:44 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,6 @@ int	main(int ac, char **av, char **env)
 		if(init_prompt(&data))
 			break ;
 	}
-	ft_free_array(data.env);
+	free_array(data.env);
 	return (0);
 }

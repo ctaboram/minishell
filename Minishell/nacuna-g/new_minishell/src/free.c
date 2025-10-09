@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 12:45:38 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/06 09:47:09 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/09 11:46:46 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void ft_free_cmds(t_cmd *cmd)
+void free_cmds(t_cmd *cmd)
 {
 	t_cmd *tmp;
 
@@ -34,7 +34,7 @@ void ft_free_cmds(t_cmd *cmd)
 }
 
 
-void	ft_free_tokens(t_token *tokens)
+void	free_tokens(t_token *tokens)
 {
 	t_token	*current;
 	t_token	*next;
@@ -49,7 +49,7 @@ void	ft_free_tokens(t_token *tokens)
 	}
 }
 
-void	ft_free_array(char **array)
+void	free_array(char **array)
 {
 	int	i;
 
