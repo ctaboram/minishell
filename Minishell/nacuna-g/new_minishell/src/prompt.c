@@ -6,7 +6,7 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:07:18 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/09 11:56:07 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/10 11:38:36 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,7 @@ static char	*get_prompt(void)
 
 t_prompt_error	init_prompt(t_data *data)
 {
-	int status;
-
-	status = 0;
+	data->exit_status = 0;
 	data->input = readline(get_prompt());
 	if (!data->input)
 	{
@@ -48,30 +46,30 @@ t_prompt_error	init_prompt(t_data *data)
 	}
 	if(ft_strcmp(data->input, ""))
 	{
-		status = tokenizer(data, data->tokenizer);
-		if (status)
+		data->exit_status = tokenizer(data, data->tokenizer);
+		if (data->exit_status)
 		{
-			ft_tokenizer_error(status);	// FUNCION PARA FT_ERROR
-									// 	if (status == ERR_SYNTAX_PIPE)
+			ft_tokenizer_error(data->exit_status);	// FUNCION PARA FT_ERROR
+									// 	if (data->exit_status == ERR_SYNTAX_PIPE)
 									// 		printf("minishell: syntax error near unexpected token `|'\n");
 			return (PROMPT_CONTINUE);
 		}
-		status = expand_word(data);
-		if (status)
+		data->exit_status = expand_word(data);
+		if (data->exit_status)
 		{
 			ft_expand_error();
 			return (PROMPT_CONTINUE);
 		}
-		status = parser_tokens(data);
-		if (status)
+		data->exit_status = parser_tokens(data);
+		if (data->exit_status)
 		{
-			ft_parser_error(status, data->tokens);
+			ft_parser_error(data->exit_status, data->tokens);
 			return (PROMPT_CONTINUE);
 		}
-		status = executor();
-		if (status)
+		data->exit_status = executor();
+		if (data->exit_status)
 		{
-			ft_executor_error(status, data->tokens);
+			ft_executor_error(data->exit_status, data->tokens);
 			return (PROMPT_CONTINUE);
 		}
 		ft_free_all();		// free_tokens(data->tokens);

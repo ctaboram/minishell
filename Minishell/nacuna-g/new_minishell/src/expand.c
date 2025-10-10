@@ -6,13 +6,11 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 11:50:45 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/09 11:54:55 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/10 12:16:24 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-extern int	g_exit_status;
 
 static char	*get_env_value(const char *var)
 {
@@ -63,8 +61,8 @@ static t_expand_error	append_segment(t_expand *ex, char *start, int len)
 
 t_expand_error	expand_word(t_data *data)
 {
-	t_expand			ex;
-	t_expand_error		status;
+	t_expand	ex;
+	char		*tmp;
 
 	init_expand(&ex);
 	if (!ex.result)
@@ -76,25 +74,37 @@ t_expand_error	expand_word(t_data *data)
 			ex.i++;
 		if (ex.i > ex.start)
 		{
-			status = append_segment(&ex, data->input + ex.start, ex.i - ex.start);
-			if (status != EXPAND_OK)
-				return (free(ex.result), status);
+			data->exit_status = append_segment(&ex, data->input + ex.start, ex.i - ex.start);
+			if (data->exit_status != EXPAND_OK)
+				return (free(ex.result), data->exit_status);
 		}
 		if (data->input[ex.i] == '$')
 		{
 			ex.i++;
-			status = get_var_name(&ex, data->input);
-			if (status != EXPAND_OK)
-				return (free(ex.result), status);
-			if (ft_strcmp(ex.var, "?") == 0)
-				ex.value = ft_itoa(g_exit_status);	// VARIABLE GLOBAL DE SIGNAL
+			if (data->input[ex.i] == '\0' || data->input[ex.i] == ' ')
+			{
+				ex.result = ft_strjoin_free(ex.result, "$");
+				if (!ex.result)
+					return (free(ex.result), EXPAND_MEMORY_ALLOC);
+			}
 			else
-				ex.value = get_env_value(ex.var);
-			if (!ex.value)
-				return (free(ex.var), free(ex.result), EXPAND_MEMORY_ALLOC);
-			ex.result = ft_strjoin_free(ex.result, ex.value);
-			free(ex.var);
-			free(ex.value);
+			{
+				data->exit_status = get_var_name(&ex, data->input);
+				if (data->exit_status != EXPAND_OK)
+					return (free(ex.result), data->exit_status);
+				if (ft_strcmp(ex.var, "?") == 0)
+					ex.value = ft_itoa(data->exit_status);
+				else
+					ex.value = get_env_value(ex.var);
+				if (!ex.value)
+					return (free(ex.var), free(ex.result), EXPAND_MEMORY_ALLOC);
+				tmp = ft_strjoin_free(ex.result, ex.value);
+				if (!tmp)
+					return (free(ex.var), free(ex.value), free(ex.result), EXPAND_MEMORY_ALLOC);
+				ex.result = tmp;
+				free(ex.var);
+				free(ex.value);
+			}
 		}
 	}
 	data->input_expanded = ex.result;

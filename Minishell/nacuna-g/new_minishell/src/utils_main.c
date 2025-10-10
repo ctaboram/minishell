@@ -1,23 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   utils_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:42:58 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/03 09:41:47 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/10 11:39:36 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"\
-
-void init_parser(t_parser *parser, t_token *tokens)
-{
-	parser->current = tokens;
-	parser->head = new_cmd();
-	parser->cmd = parser->head;
-}
 
 static void	cpy_env(t_data *data, char **env)
 {
@@ -43,7 +36,6 @@ static void	cpy_env(t_data *data, char **env)
 void	init_data(t_data *data, char **env)
 {
 	data->tokens = NULL;
-	data->exit_status = 0;
 	data->tokenizer->start = NULL;
 	data->tokenizer->end = NULL;
 	data->env = NULL;

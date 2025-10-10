@@ -6,7 +6,7 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:39:52 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/09 11:55:12 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/10 10:24:07 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,27 +135,27 @@ typedef struct s_expand
 }	t_expand;
 
 // PROMPT FUNCTIONS
-int		init_prompt(t_data *data);
+t_prompt_error	init_prompt(t_data *data);
 
 // TOKENIZER FUNCTIONS
-int		tokenizer(t_data *data, t_tokenizer *tokenizer);
+t_tokenizer_error	tokenizer(t_data *data, t_tokenizer	*tokenizer);
 
 // UTILS_TOKENIZER FUNCTIONS
 t_token	*create_token(char *value, t_token_type type);
 void	add_token(t_token **tokens, t_token *token);
-
-// PARSER FUNCTIONS
-int		parser_tokens(t_data *data);
-
-// UTILS_PARSER FUNCTIONS
-int		append_arg(t_cmd *cmd, char *value);
-t_cmd	*new_cmd(void);
 
 // EXPAND FUNCTION
 t_expand_error	expand_word(t_data *data);
 
 // UTILS_EXPAND FUNCTIONS
 void	init_expand(t_expand *ex);
+
+// PARSER FUNCTIONS
+t_parser_error	parser_tokens(t_data *data);
+
+// UTILS_PARSER FUNCTIONS
+t_parser_error	append_arg(t_cmd *cmd, char *value);
+t_cmd	*new_cmd(void);
 
 // UTILS FUNCTIONS
 void	init_parser(t_parser *parser, t_token *tokens);

@@ -6,7 +6,7 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 12:55:42 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/09 11:23:21 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/10 11:39:09 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,26 +61,24 @@ static int	handle_redir_in_parser(t_parser *parser)
 t_parser_error	parser_tokens(t_data *data)
 {
 	t_parser	parser;
-	int			status;
 
-	status = 0;
 	init_parser(&parser,data->tokens);
 	while (parser.current && parser.current->type != TOKEN_EOF)
 	{
 		if (parser.current->type == TOKEN_WORD
 			|| parser.current->type == TOKEN_QUOTE_SINGLE
 			|| parser.current->type == TOKEN_QUOTE_DOUBLE)
-			status = handler_word_parser(&parser);
+			data->exit_status = handler_word_parser(&parser);
 		else if (parser.current->type == TOKEN_PIPE)
-			status = handler_pipe_parser(&parser);
+			data->exit_status = handler_pipe_parser(&parser);
 		else if (parser.current->type == TOKEN_REDIR_OUT
 			|| parser.current->type == TOKEN_REDIR_APPEND)
-			status = handle_redir_out_parser(&parser);
+			data->exit_status = handle_redir_out_parser(&parser);
 		else if (parser.current->type == TOKEN_REDIR_IN
 			|| parser.current->type == TOKEN_HEREDOC)
-			status = handle_redir_in_parser(&parser);
-		if (status)
-			return (status);
+			data->exit_status = handle_redir_in_parser(&parser);
+		if (data->exit_status)
+			return (data->exit_status);
 		parser.current = parser.current->next;
 	}
 	data->cmds_list = parser.head;

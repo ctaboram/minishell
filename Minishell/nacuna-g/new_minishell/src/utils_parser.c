@@ -3,14 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   utils_parser.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 12:29:46 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/03 13:06:32 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/10 10:25:38 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+void init_parser(t_parser *parser, t_token *tokens)
+{
+	parser->current = tokens;
+	parser->head = new_cmd();
+	parser->cmd = parser->head;
+}
 
 t_cmd	*new_cmd(void)
 {
@@ -27,7 +34,7 @@ t_cmd	*new_cmd(void)
 	return cmd;
 }
 
-int	append_arg(t_cmd *cmd, char *value)
+t_parser_error	append_arg(t_cmd *cmd, char *value)
 {
 	int		i;
 	int		j;

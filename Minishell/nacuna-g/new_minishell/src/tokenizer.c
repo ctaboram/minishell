@@ -6,7 +6,7 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:33:17 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/09 11:23:15 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/10 11:39:27 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,10 +116,8 @@ static int	handle_quote(t_tokenizer *tokenizer, t_data *data, char quote)
 t_tokenizer_error	tokenizer(t_data *data, t_tokenizer	*tokenizer)
 {
 	char		*value;
-	int			status;
 
 	tokenizer->start = data->input;
-	status = 0;
 	while (*tokenizer->start)
 	{
 		while (*tokenizer->start && ft_isspace(*tokenizer->start))
@@ -128,17 +126,17 @@ t_tokenizer_error	tokenizer(t_data *data, t_tokenizer	*tokenizer)
 			break ;
 		tokenizer->end = tokenizer->start;
 		if (*tokenizer->end == '\'' || *tokenizer->end == '"')
-			status = handle_quote(tokenizer , data, *tokenizer->end);
+			data->exit_status = handle_quote(tokenizer , data, *tokenizer->end);
 		else if(*tokenizer->end == '|')
-			status = handle_pipe(tokenizer, data);
+			data->exit_status = handle_pipe(tokenizer, data);
 		else if(*tokenizer->end == '>')
-			status = handle_redirect_out(tokenizer, data);
+			data->exit_status = handle_redirect_out(tokenizer, data);
 		else if(*tokenizer->end == '<')
-			status = handle_redirect_in(tokenizer, data);
+			data->exit_status = handle_redirect_in(tokenizer, data);
 		else
-			status = handle_word(tokenizer, data);
-		if(status)
-			return (status);
+			data->exit_status = handle_word(tokenizer, data);
+		if(data->exit_status)
+			return (data->exit_status);
 	}
 	add_token(&data->tokens, create_token(NULL, TOKEN_EOF));
 	return (TOK_OK);
