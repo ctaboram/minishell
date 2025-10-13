@@ -6,11 +6,17 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:42:58 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/10 11:39:36 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/13 13:01:45 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"\
+
+static void	fatal_error(char *msg)
+{
+	ft_putendl_fd(msg, 1);
+	exit(EXIT_FAILURE);
+}
 
 static void	cpy_env(t_data *data, char **env)
 {

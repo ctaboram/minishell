@@ -6,7 +6,7 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:39:52 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/10 10:24:07 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/13 13:01:51 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,10 @@
 
 typedef enum e_prompt
 {
+	ERROR_TOKENIZER,
+	ERROR_EXPAND,
+	ERROR_PARSER,
+	ERROR_EXECUTOR,
 	PROMPT_CONTINUE = 0,
 	PROMPT_EOF,
 	PROMPT_EXIT
@@ -163,7 +167,9 @@ void	init_data(t_data *data, char **env);
 void	free_tokens(t_token *tokens);
 
 // ERROR FUNCTIONS
-void	fatal_error(char *msg);
+void	ft_tokenizer_error(t_tokenizer_error err);
+void	ft_expand_error(t_expand_error err);
+void	ft_parser_error(t_parser_error err);
 
 // FREE FUNCTIONS
 void	free_array(char **array);

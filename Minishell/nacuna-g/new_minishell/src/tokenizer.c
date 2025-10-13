@@ -6,7 +6,7 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:33:17 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/10 11:39:27 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/13 12:47:07 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,8 +98,6 @@ static int	handle_quote(t_tokenizer *tokenizer, t_data *data, char quote)
 	value = ft_strndup(tokenizer->start + 1, tokenizer->end - tokenizer->start - 1);
 	if (!value)
 	{
-		free_tokens(data->tokens);
-		data->tokens = NULL;
 		tokenizer->start = tokenizer->end;
 		return (TOK_MEMORY_ALLOC);
 	}

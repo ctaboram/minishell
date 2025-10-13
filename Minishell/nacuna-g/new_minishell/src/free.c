@@ -6,7 +6,7 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 12:45:38 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/09 11:46:46 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/13 12:45:24 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,25 @@ void	free_tokens(t_token *tokens)
 		free(current->value);
 		free(current);
 		current = next;
+	}
+}
+
+void	ft_free_all(t_data *data)
+{
+	if (data->tokens)
+	{
+		free_tokens(data->tokens);
+		data->tokens = NULL;
+	}
+	if (data->cmds_list)
+	{
+		free_cmds(data->cmds_list);
+		data->cmds_list = NULL;
+	}
+	if (data->input_expanded)
+	{
+		free(data->input_expanded);
+		data->input_expanded = NULL;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:07:18 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/10 11:38:36 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/13 12:59:17 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,38 +44,21 @@ t_prompt_error	init_prompt(t_data *data)
 		free(data->input);
 		return (PROMPT_EXIT);
 	}
-	if(ft_strcmp(data->input, ""))
+	if (ft_strcmp(data->input, ""))
 	{
 		data->exit_status = tokenizer(data, data->tokenizer);
 		if (data->exit_status)
-		{
-			ft_tokenizer_error(data->exit_status);	// FUNCION PARA FT_ERROR
-									// 	if (data->exit_status == ERR_SYNTAX_PIPE)
-									// 		printf("minishell: syntax error near unexpected token `|'\n");
-			return (PROMPT_CONTINUE);
-		}
+			return (handler_error(data, ERROR_TOKENIZER));
 		data->exit_status = expand_word(data);
 		if (data->exit_status)
-		{
-			ft_expand_error();
-			return (PROMPT_CONTINUE);
-		}
+			return (handler_error(data, ERROR_EXPAND));
 		data->exit_status = parser_tokens(data);
 		if (data->exit_status)
-		{
-			ft_parser_error(data->exit_status, data->tokens);
-			return (PROMPT_CONTINUE);
-		}
+			return (handler_error(data, ERROR_PARSER));
 		data->exit_status = executor();
 		if (data->exit_status)
-		{
-			ft_executor_error(data->exit_status, data->tokens);
-			return (PROMPT_CONTINUE);
-		}
-		ft_free_all();		// free_tokens(data->tokens);
-							// data->tokens = NULL;
-							// free_cmds(data->cmds);
-							// data->cmds = NULL;
+			return (handler_error(data, ERROR_EXECUTOR));
+		ft_free_all(data);
 	}
 	free(data->input);
 	free(data->input_expanded);
