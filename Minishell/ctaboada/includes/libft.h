@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 11:22:55 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/09/12 09:58:02 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/14 11:28:31 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
+#endif
 //	HEADERS LIBFT
 # include <stdlib.h>
 # include <unistd.h>
@@ -26,6 +27,8 @@
 # include <sys/types.h>
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 1024
+#ifndef PATH_MAX
+# define PATH_MAX 4096
 # endif
 
 //	LIBFT

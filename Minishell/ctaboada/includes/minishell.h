@@ -6,7 +6,7 @@
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 11:55:38 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/07 11:57:13 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/10/14 11:32:59 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,15 @@ typedef struct s_data
 	int			exit_status;
 }	t_data;
 
+typedef struct s_cmd
+{
+	char			**av;			// argumentos (argv[0] = comando)
+	char			*redir_in;		// archivo de entrada
+	char			*redir_out;		// archivo de salida
+	int				is_append;		// 1 si >>
+	struct s_cmd	*next;			// siguiente comando si hay pipe
+}	t_cmd;
+
 extern char **environ;
 
 // MAIN FUNCTIONS
@@ -84,6 +93,9 @@ char	**ft_builtin_unset(char **args, char **env);
 
 char **add_new_env(char **env, char *new_var);
 
+int execute(t_data *data,t_cmd *cmd);
+
+void free_cmds(t_cmd *cmd);
 // TOKENIZATION
 t_token *tokenize(char *line);
 void add_token(t_token **list, t_token *new_token);

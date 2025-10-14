@@ -6,14 +6,34 @@
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 10:42:44 by ctaboada          #+#    #+#             */
-/*   Updated: 2025/10/07 13:31:38 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/10/14 11:30:35 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 #include <limits.h>
 
-int ft_builtin_cd(char **args, t_data *data)
+/* Helper functions */
+static void	ft_remove_last_dir(char *path)
+{
+	int	i = ft_strlen(path) - 1;
+
+	while (i > 0 && path[i] == '/')
+		i--;
+	while (i > 0 && path[i] != '/')
+		i--;
+	path[i == 0 ? 1 : i] = '\0';
+}
+
+static void	ft_strjoin_path(const char *base, const char *rel, char *result)
+{
+	ft_strlcpy(result, base, MAX_PROMPT_SIZE);
+	if (result[ft_strlen(result) - 1] != '/')
+		ft_strlcat(result, "/", MAX_PROMPT_SIZE);
+	ft_strlcat(result, rel, MAX_PROMPT_SIZE);
+}
+
+int	ft_builtin_cd(char **args, t_data *data)
 {
 	char	oldpwd[MAX_PROMPT_SIZE];
 	char	newpwd[MAX_PROMPT_SIZE];
@@ -21,17 +41,15 @@ int ft_builtin_cd(char **args, t_data *data)
 	char	*oldpwd_str;
 	char	*pwd_str;
 
-	// 1️⃣ Obtener la ruta actual antes de cambiar
 	if (!getcwd(oldpwd, sizeof(oldpwd)))
 	{
 		perror("cd: getcwd");
 		return (1);
 	}
 
-	// 2️⃣ Determinar el destino (por defecto $HOME)
 	if (!args[1] || !args[1][0])
 	{
-		path = getenv("HOME"); // puedes reemplazarlo por tu propia función que busque en data->env
+		path = getenv("HOME");
 		if (!path)
 		{
 			fprintf(stderr, "cd: HOME not set\n");
@@ -40,7 +58,6 @@ int ft_builtin_cd(char **args, t_data *data)
 	}
 	else if (ft_strcmp(args[1], "-") == 0)
 	{
-		// caso especial: cd -
 		path = NULL;
 		for (int i = 0; data->env[i]; i++)
 		{
@@ -55,28 +72,25 @@ int ft_builtin_cd(char **args, t_data *data)
 			fprintf(stderr, "cd: OLDPWD not set\n");
 			return (1);
 		}
-		printf("%s\n", path); // mostrar la ruta cuando haces "cd -"
+		printf("%s\n", path);
 	}
 	else
 		path = args[1];
 
-	// 3️⃣ Intentar cambiar al nuevo directorio
 	if (chdir(path) != 0)
 	{
 		perror("cd");
 		return (1);
 	}
 
-	// 4️⃣ Obtener la nueva ruta
 	if (!getcwd(newpwd, sizeof(newpwd)))
 	{
-		 if (ft_strcmp(path, "..") == 0)
-        ft_strrmdir(oldpwd); // eliminar último segmento de oldpwd
-    else
-        ft_strjoin_path(oldpwd, path, newpwd); // oldpwd + "/" + path
+		if (ft_strcmp(path, "..") == 0)
+			ft_remove_last_dir(oldpwd);
+		else
+			ft_strjoin_path(oldpwd, path, newpwd);
 	}
 
-	// 5️⃣ Actualizar variables de entorno PWD y OLDPWD
 	oldpwd_str = ft_strjoin("OLDPWD=", oldpwd);
 	if (!oldpwd_str)
 		return (1);

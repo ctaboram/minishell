@@ -6,11 +6,11 @@
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 12:30:20 by ctaboada          #+#    #+#             */
-/*   Updated: 2025/10/06 12:33:31 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/10/14 11:30:50 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 static int	count_env_vars(char **env)
 {

@@ -6,11 +6,11 @@
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 10:42:41 by ctaboada          #+#    #+#             */
-/*   Updated: 2025/09/16 10:42:42 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/10/14 11:30:46 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 int ft_builtin_pwd(void)
 {
