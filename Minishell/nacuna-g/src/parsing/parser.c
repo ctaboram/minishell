@@ -60,29 +60,30 @@ static int	handle_redir_in_parser(t_parser *parser)
 
 t_parser_error	parser_tokens(t_data *data)
 {
-	t_parser		parser;
 	t_parser_error	status;
 
 	status = 0;
-	init_parser(&parser,data->tokens);
-	while (parser.current && parser.current->type != TOKEN_EOF)
+	// Inicializar la estructura parser con los tokens del tokenizer
+	data->parser.tokens = data->tokenizer.tokens;
+	init_parser(&data->parser, data->parser.tokens);
+	while (data->parser.current && data->parser.current->type != TOKEN_EOF)
 	{
-		if (parser.current->type == TOKEN_WORD
-			|| parser.current->type == TOKEN_QUOTE_SINGLE
-			|| parser.current->type == TOKEN_QUOTE_DOUBLE)
-			status = handler_word_parser(&parser);
-		else if (parser.current->type == TOKEN_PIPE)
-			status = handler_pipe_parser(&parser);
-		else if (parser.current->type == TOKEN_REDIR_OUT
-			|| parser.current->type == TOKEN_REDIR_APPEND)
-			status = handle_redir_out_parser(&parser);
-		else if (parser.current->type == TOKEN_REDIR_IN
-			|| parser.current->type == TOKEN_HEREDOC)
-			status = handle_redir_in_parser(&parser);
+		if (data->parser.current->type == TOKEN_WORD
+			|| data->parser.current->type == TOKEN_QUOTE_SINGLE
+			|| data->parser.current->type == TOKEN_QUOTE_DOUBLE)
+			status = handler_word_parser(&data->parser);
+		else if (data->parser.current->type == TOKEN_PIPE)
+			status = handler_pipe_parser(&data->parser);
+		else if (data->parser.current->type == TOKEN_REDIR_OUT
+			|| data->parser.current->type == TOKEN_REDIR_APPEND)
+			status = handle_redir_out_parser(&data->parser);
+		else if (data->parser.current->type == TOKEN_REDIR_IN
+			|| data->parser.current->type == TOKEN_HEREDOC)
+			status = handle_redir_in_parser(&data->parser);
 		if (status)
 			return (status);
-		parser.current = parser.current->next;
+		data->parser.current = data->parser.current->next;
 	}
-	data->cmds_list = parser.head;
+	data->parser.cmds_list = data->parser.head;
 	return (PARSER_OK);
 }

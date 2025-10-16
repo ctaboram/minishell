@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-int is_builtin(char *cmd)
+int	is_builtin(char *cmd)
 {
 	if (!cmd)
 		return (0);
@@ -24,16 +24,17 @@ int is_builtin(char *cmd)
 		|| !ft_strcmp(cmd, "env")
 		|| !ft_strcmp(cmd, "exit"));
 }
+
 void	exec_builtin(t_data *data, t_cmd *cmd)
 {
 	if (!cmd || !cmd->av || !cmd->av[0])
-		return;
+		return ;
 	if (!ft_strcmp(cmd->av[0], "cd"))
 		ft_builtin_cd(cmd->av, data);
 	else if (!ft_strcmp(cmd->av[0], "pwd"))
 		ft_builtin_pwd();
 	else if (!ft_strcmp(cmd->av[0], "echo"))
-		ft_builting_echo(cmd->av);
+		ft_builtin_echo(cmd->av);
 	else if (!ft_strcmp(cmd->av[0], "export"))
 		data->env = ft_builtin_export(cmd->av, data->env);
 	else if (!ft_strcmp(cmd->av[0], "unset"))

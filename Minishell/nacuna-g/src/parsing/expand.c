@@ -6,7 +6,7 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 11:50:45 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/15 11:46:00 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/16 10:52:00 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@ static char	*get_env_value(const char *var, char **env)
 	value = getenv(var);
 	if (!value)
 		return (ft_strdup(""));
-	return (ft_strdup(value));
+	if (value)
+		return (ft_strdup(value));
+	return (ft_strdup(""));
 }
 
 static t_expand_error	get_var_name(t_expand *ex, char *word)
@@ -73,54 +75,57 @@ static t_expand_error	append_segment(t_expand *ex, char *start, int len)
 
 t_expand_error expand_word(t_data *data)
 {
-	t_expand		ex;
 	char			*tmp;
 	t_expand_error	status;
 	
 	status = 0;
-	init_expand(&ex);
-	if (!ex.result)
+	// Inicializar la estructura expand con los datos necesarios
+	data->expand.input = data->input;
+	data->expand.env = data->env;
+	data->expand.exit_status = data->exit_status;
+	init_expand(&data->expand);
+	if (!data->expand.result)
 		return (EXPAND_MEMORY_ALLOC);
-	while (data->input[ex.i])
+	while (data->expand.input[data->expand.i])
 	{
-		ex.start = ex.i;
-		while (data->input[ex.i] && data->input[ex.i] != '$')
-			ex.i++;
-		if (ex.i > ex.start)
+		data->expand.start = data->expand.i;
+		while (data->expand.input[data->expand.i] && data->expand.input[data->expand.i] != '$')
+			data->expand.i++;
+		if (data->expand.i > data->expand.start)
 		{
-			status = append_segment(&ex, data->input + ex.start, ex.i - ex.start);
+			status = append_segment(&data->expand, data->expand.input + data->expand.start, data->expand.i - data->expand.start);
 			if (status != EXPAND_OK)
 				return (status);
 		}
-		if (data->input[ex.i] == '$')
+		if (data->expand.input[data->expand.i] == '$')
 		{
-			ex.i++;
-			if (data->input[ex.i] == '\0' || data->input[ex.i] == ' ')
+			data->expand.i++;
+			if (data->expand.input[data->expand.i] == '\0' || data->expand.input[data->expand.i] == ' ')
 			{
-				ex.result = ft_strjoin_free(ex.result, "$");
-				if (!ex.result)
+				data->expand.result = ft_strjoin_free(data->expand.result, "$");
+				if (!data->expand.result)
 					return (EXPAND_MEMORY_ALLOC);
 			}
 			else
 			{
-				status = get_var_name(&ex, data->input);
+				status = get_var_name(&data->expand, data->expand.input);
 				if (status != EXPAND_OK)
 					return (status);
-				if (ft_strcmp(ex.var, "?") == 0)
-					ex.value = ft_itoa(data->exit_status);
+				if (ft_strcmp(data->expand.var, "?") == 0)
+					data->expand.value = ft_itoa(data->expand.exit_status);
 				else
-					ex.value = get_env_value(ex.var, data->env);
-				if (!ex.value)
+					data->expand.value = get_env_value(data->expand.var, data->expand.env);
+				if (!data->expand.value)
 					return (EXPAND_MEMORY_ALLOC);
-				tmp = ft_strjoin_free(ex.result, ex.value);
+				tmp = ft_strjoin_free(data->expand.result, data->expand.value);
 				if (!tmp)
 					return (EXPAND_MEMORY_ALLOC);
-				ex.result = tmp;
-				free(ex.var);
-				free(ex.value);
+				data->expand.result = tmp;
+				free(data->expand.var);
+				free(data->expand.value);
 			}
 		}
 	}
-	data->input_expanded = ex.result;
+	data->expand.input_expanded = data->expand.result;
 	return (EXPAND_OK);
 }

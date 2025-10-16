@@ -11,31 +11,44 @@ LIBFT_A		= $(LIBFT_DIR)/libft.a
 SRC_DIR		= src
 OBJ_DIR		= obj
 
-SRCS		=	$(SRC_DIR)/main.c \
-				$(SRC_DIR)/prompt.c \
-				$(SRC_DIR)/tokenizer.c \
-				$(SRC_DIR)/utils_tokenizer.c \
-				$(SRC_DIR)/parser.c \
-				$(SRC_DIR)/utils_parser.c \
-				$(SRC_DIR)/expand.c \
-				$(SRC_DIR)/utils_expand.c \
-				$(SRC_DIR)/executor.c \
-				$(SRC_DIR)/utils_main.c \
-				$(SRC_DIR)/errors.c \
-				$(SRC_DIR)/errors_child.c \
-				$(SRC_DIR)/free.c \
-				$(SRC_DIR)/builtins.c \
-				$(SRC_DIR)/ft_cd.c \
-				$(SRC_DIR)/ft_echo.c \
-				$(SRC_DIR)/ft_env.c \
-				$(SRC_DIR)/ft_pwd.c \
-				$(SRC_DIR)/ft_unset.c \
-				$(SRC_DIR)/ft_export.c \
-				$(SRC_DIR)/ft_utils_export.c \
-				$(SRC_DIR)/utils_executor.c \
-				$(SRC_DIR)/signals.c \
+# Core files
+CORE_SRCS	= $(SRC_DIR)/core/main.c \
+			  $(SRC_DIR)/core/prompt.c \
+			  $(SRC_DIR)/core/utils_main.c
 
-OBJS		=	$(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
+# Parsing files
+PARSING_SRCS= $(SRC_DIR)/parsing/tokenizer.c \
+			  $(SRC_DIR)/parsing/utils_tokenizer.c \
+			  $(SRC_DIR)/parsing/parser.c \
+			  $(SRC_DIR)/parsing/utils_parser.c \
+			  $(SRC_DIR)/parsing/expand.c \
+			  $(SRC_DIR)/parsing/utils_expand.c
+
+# Execution files
+EXEC_SRCS	= $(SRC_DIR)/execution/executor.c \
+			  $(SRC_DIR)/execution/utils_executor.c
+
+# Builtin files
+BUILTIN_SRCS= $(SRC_DIR)/builtins/builtins.c \
+			  $(SRC_DIR)/builtins/cd.c \
+			  $(SRC_DIR)/builtins/echo.c \
+			  $(SRC_DIR)/builtins/env.c \
+			  $(SRC_DIR)/builtins/pwd.c \
+			  $(SRC_DIR)/builtins/unset.c \
+			  $(SRC_DIR)/builtins/export.c \
+			  $(SRC_DIR)/builtins/utils_export.c
+
+# Utils files
+UTILS_SRCS	= $(SRC_DIR)/utils/errors.c \
+			  $(SRC_DIR)/utils/errors_child.c \
+			  $(SRC_DIR)/utils/free.c \
+			  $(SRC_DIR)/utils/signals.c
+
+# All source files
+SRCS		= $(CORE_SRCS) $(PARSING_SRCS) $(EXEC_SRCS) $(BUILTIN_SRCS) $(UTILS_SRCS)
+
+# Object files
+OBJS		= $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 
 MINISHELL_H	= $(INCLUDE_DIR)/minishell.h
 LIBFT_H		= $(INCLUDE_DIR)/libft.h
@@ -51,12 +64,12 @@ all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT_A)
 	@echo "$(YELLOW)Compiling minishell...$(RESET)"
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT_A) $(LDFLAGS) $(IFLAGS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT_A) $(LDFLAGS) $(IFLAGS) -o $(NAME)
 	@echo "$(GREEN)Compilation complete$(RESET)"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(MINISHELL_H) $(LIBFT_H)
-	mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
 
 $(LIBFT_A):
 	@echo "$(YELLOW)Compiling libft...$(RESET)"
@@ -65,8 +78,8 @@ $(LIBFT_A):
 
 clean:
 	@echo "$(RED)Eliminando obj...$(RESET)"
-	rm -rf $(OBJ_DIR)
-	$(MAKE) --no-print-directory -C $(LIBFT_DIR) clean
+	@rm -rf $(OBJ_DIR)
+	@$(MAKE) --no-print-directory -C $(LIBFT_DIR) clean
 
 fclean: clean
 	@echo "$(RED)Eliminando $(NAME)...$(RESET)"

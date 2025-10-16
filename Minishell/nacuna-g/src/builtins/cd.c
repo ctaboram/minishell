@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_cd.c                                            :+:      :+:    :+:   */
+/*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 10:42:44 by ctaboada          #+#    #+#             */
-/*   Updated: 2025/10/15 11:46:49 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/16 12:11:18 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,17 @@
 
 static void	ft_remove_last_dir(char *path)
 {
-	int	i = ft_strlen(path) - 1;
+	int	i;
 
+	i = ft_strlen(path) - 1;
 	while (i > 0 && path[i] == '/')
 		i--;
 	while (i > 0 && path[i] != '/')
 		i--;
-	path[i == 0 ? 1 : i] = '\0';
+	if (i == 0)
+		path[1] = '\0';
+	else
+		path[i] = '\0';
 }
 
 static void	ft_strjoin_path(const char *base, const char *rel, char *result)
@@ -38,13 +42,14 @@ int	ft_builtin_cd(char **args, t_data *data)
 	char	*path;
 	char	*oldpwd_str;
 	char	*pwd_str;
+	int		i;
 
+	i = 0;
 	if (!getcwd(oldpwd, sizeof(oldpwd)))
 	{
 		perror("cd: getcwd");
 		return (1);
 	}
-
 	if (!args[1] || !args[1][0])
 	{
 		path = getenv("HOME");
@@ -57,13 +62,11 @@ int	ft_builtin_cd(char **args, t_data *data)
 	else if (ft_strcmp(args[1], "-") == 0)
 	{
 		path = NULL;
-		for (int i = 0; data->env[i]; i++)
+		while (data->env[i] && !path)
 		{
 			if (ft_strncmp(data->env[i], "OLDPWD=", 7) == 0)
-			{
 				path = data->env[i] + 7;
-				break;
-			}
+			i++;
 		}
 		if (!path)
 		{
@@ -74,13 +77,11 @@ int	ft_builtin_cd(char **args, t_data *data)
 	}
 	else
 		path = args[1];
-
 	if (chdir(path) != 0)
 	{
 		perror("cd");
 		return (1);
 	}
-
 	if (!getcwd(newpwd, sizeof(newpwd)))
 	{
 		if (ft_strcmp(path, "..") == 0)
@@ -88,18 +89,15 @@ int	ft_builtin_cd(char **args, t_data *data)
 		else
 			ft_strjoin_path(oldpwd, path, newpwd);
 	}
-
 	oldpwd_str = ft_strjoin("OLDPWD=", oldpwd);
 	if (!oldpwd_str)
 		return (1);
 	data->env = add_or_update_env(data->env, oldpwd_str);
 	free(oldpwd_str);
-
 	pwd_str = ft_strjoin("PWD=", newpwd);
 	if (!pwd_str)
 		return (1);
 	data->env = add_or_update_env(data->env, pwd_str);
 	free(pwd_str);
-
 	return (0);
 }

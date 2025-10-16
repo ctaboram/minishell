@@ -51,15 +51,21 @@ void	free_tokens(t_token *tokens)
 
 void	ft_free_all(t_data *data)
 {
-	if (data->tokens)
-		free_tokens(data->tokens);
-	if (data->cmds_list)
-		free_cmds(data->cmds_list);
-	if (data->input_expanded)
-		free(data->input_expanded);
-	data->tokens = NULL;
-	data->cmds_list = NULL;
-	data->input_expanded = NULL;
+	// Liberar tokens del tokenizer
+	if (data->tokenizer.tokens)
+		free_tokens(data->tokenizer.tokens);
+	// Liberar comandos del parser
+	if (data->parser.cmds_list)
+		free_cmds(data->parser.cmds_list);
+	// Liberar input expandido
+	if (data->expand.input_expanded)
+		free(data->expand.input_expanded);
+	
+	// Resetear punteros
+	data->tokenizer.tokens = NULL;
+	data->parser.cmds_list = NULL;
+	data->expand.input_expanded = NULL;
+	data->execute.cmds_list = NULL;
 }
 
 

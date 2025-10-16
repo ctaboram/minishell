@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_unset.c                                         :+:      :+:    :+:   */
+/*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 12:30:20 by ctaboada          #+#    #+#             */
-/*   Updated: 2025/10/14 11:30:50 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/10/16 12:11:42 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ static char	**create_new_env(char **env, char *var_to_remove)
 	while (env[i])
 	{
 		env_var_len = get_var_name_length(env[i]);
-		if (ft_strncmp(env[i], var_to_remove, var_len) != 0 || 
-			var_len != env_var_len)
+		if (ft_strncmp(env[i], var_to_remove, var_len) != 0
+			|| var_len != env_var_len)
 		{
 			new_env[j] = ft_strdup(env[i]);
 			if (!new_env[j])
@@ -83,21 +83,19 @@ char	**ft_builtin_unset(char **args, char **env)
 		{
 			printf("unset: `%s': not a valid identifier\n", args[i]);
 			i++;
-			continue;
+			continue ;
 		}
 		new_env = create_new_env(env, args[i]);
 		if (!new_env)
 			return (env);
-		if(new_env != env)
+		if (new_env != env)
 		{
 			temp = env;
 			env = new_env;
 			ft_free_env(temp);
 		}
 		else
-		{
 			ft_free_env(new_env);
-		}
 		i++;
 	}
 	return (env);

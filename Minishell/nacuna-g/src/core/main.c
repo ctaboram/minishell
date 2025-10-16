@@ -26,8 +26,7 @@ int	main(int ac, char **av, char **env)
 		if(init_prompt(&data))
 			break ;
 	}
-	if (data.tokenizer)
-		free(data.tokenizer);
+	// Las estructuras ahora son parte de data, no necesitan free separado
 	free_array(data.env);
 	return (0);
 }

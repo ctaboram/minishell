@@ -6,11 +6,11 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:42:58 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/13 13:01:45 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/16 10:33:53 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"\
+#include "../includes/minishell.h"
 
 static void	fatal_error(char *msg)
 {
@@ -41,16 +41,42 @@ static void	cpy_env(t_data *data, char **env)
 
 void	init_data(t_data *data, char **env)
 {
-	data->tokens = NULL;
-	data->tokenizer = malloc(sizeof(t_tokenizer));
-	if (!data->tokenizer)
-		fatal_error("Error allocating memory for tokenizer");
-	data->tokenizer->start = NULL;
-	data->tokenizer->end = NULL;
+	// Inicializar variables principales
 	data->input = NULL;
-	data->input_expanded = NULL;
-	data->cmds_list = NULL;
 	data->exit_status = 0;
 	data->env = NULL;
 	cpy_env(data, env);
+	
+	// Inicializar estructura expand
+	data->expand.result = NULL;
+	data->expand.var = NULL;
+	data->expand.value = NULL;
+	data->expand.i = 0;
+	data->expand.start = 0;
+	data->expand.input = NULL;
+	data->expand.input_expanded = NULL;
+	data->expand.env = data->env;
+	data->expand.exit_status = 0;
+	
+	// Inicializar estructura tokenizer
+	data->tokenizer.start = NULL;
+	data->tokenizer.end = NULL;
+	data->tokenizer.input_to_tokenize = NULL;
+	data->tokenizer.tokens = NULL;
+	
+	// Inicializar estructura parser
+	data->parser.current = NULL;
+	data->parser.head = NULL;
+	data->parser.cmd = NULL;
+	data->parser.tokens = NULL;
+	data->parser.cmds_list = NULL;
+	
+	// Inicializar estructura execute
+	data->execute.cmds_list = NULL;
+	data->execute.env = data->env;
+	data->execute.exit_status = 0;
+	data->execute.last_pid = 0;
+	data->execute.pipe_fds[0] = 0;
+	data->execute.pipe_fds[1] = 0;
+	data->execute.in_fd = 0;
 }

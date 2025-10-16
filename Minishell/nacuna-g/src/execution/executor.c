@@ -52,7 +52,7 @@ static t_executor_error	exec_single(t_data *data, t_cmd *cmd)
 	int		status;
 	t_executor_error	err;
 
-	if (cmd->av && cmd->av[0] && is_builtin(cmd->av[0]))
+	if (cmd->av && cmd->av[0] && is_builtin(cmd->av[0]) && !cmd->redir_in && !cmd->redir_out)
 	{
 		exec_builtin(data, cmd);
 		return (EXECUTOR_OK);
@@ -197,16 +197,25 @@ static t_executor_error	exec_pipeline(t_data *data, t_cmd *cmd)
 	return (EXECUTOR_OK);
 }
 
-t_executor_error	execute(t_data *data, t_cmd *cmd)
+t_executor_error	execute(t_data *data)
 {
 	t_executor_error	status;
 
 	status = EXECUTOR_OK;
-	if (!cmd)
+	// Inicializar la estructura execute con los datos necesarios
+	data->execute.cmds_list = data->parser.cmds_list;
+	data->execute.env = data->env;
+	data->execute.exit_status = data->exit_status;
+	data->execute.in_fd = 0;
+	
+	if (!data->execute.cmds_list)
 		return (EXECUTOR_OK);
-	if (!cmd->next)
-		status = exec_single(data, cmd);
+	if (!data->execute.cmds_list->next)
+		status = exec_single(data, data->execute.cmds_list);
 	else
-		status = exec_pipeline(data, cmd);
+		status = exec_pipeline(data, data->execute.cmds_list);
+	
+	// Actualizar exit_status en data principal
+	data->exit_status = data->execute.exit_status;
 	return (status);
 }

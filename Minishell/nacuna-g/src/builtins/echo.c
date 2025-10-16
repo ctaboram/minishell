@@ -12,11 +12,15 @@
 
 #include "../includes/minishell.h"
 
-int	ft_builting_echo(char **args)
+int	ft_builtin_echo(char **args)
 {
-	int	i = 1;
-	int	newline = 1;
+	int		i;
+	int		newline;
+	char	*str;
+	size_t	len;
 
+	i = 1;
+	newline = 1;
 	while (args[i] && !ft_strncmp(args[i], "-n", 2) && args[i][2] == '\0')
 	{
 		newline = 0;
@@ -24,8 +28,8 @@ int	ft_builting_echo(char **args)
 	}
 	while (args[i])
 	{
-		char *str = args[i];
-		size_t len = ft_strlen(str);
+		str = args[i];
+		len = ft_strlen(str);
 		if ((str[0] == '"' && str[len - 1] == '"') || (str[0] == '\'' && str[len - 1] == '\''))
 			write(1, str + 1, len - 2);
 		else
