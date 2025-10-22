@@ -6,7 +6,7 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:39:52 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/16 12:03:07 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/22 11:00:34 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,6 +190,13 @@ typedef struct s_data
 // PROMPT FUNCTIONS
 t_prompt_error		init_prompt(t_data *data);
 
+// EXPAND FUNCTION
+t_expand_error		expand_word(t_data *data);
+
+// UTILS_EXPAND FUNCTIONS
+void				init_expand(t_data *data);
+char				*ft_strjoin_free(char *s1, char *s2);
+
 // TOKENIZER FUNCTIONS
 t_tokenizer_error	tokenizer(t_data *data);
 
@@ -197,19 +204,18 @@ t_tokenizer_error	tokenizer(t_data *data);
 t_token				*create_token(char *value, t_token_type type);
 void				add_token(t_token **tokens, t_token *token);
 
-// EXPAND FUNCTION
-t_expand_error		expand_word(t_data *data);
-
-// UTILS_EXPAND FUNCTIONS
-void				init_expand(t_expand *ex);
-char				*ft_strjoin_free(char *s1, char *s2);
-
 // PARSER FUNCTIONS
 t_parser_error		parser_tokens(t_data *data);
 
 // UTILS_PARSER FUNCTIONS
 t_parser_error		append_arg(t_cmd *cmd, char *value);
 t_cmd				*new_cmd(void);
+
+// EXECUTOR FUNCTIONS
+t_executor_error	execute(t_data *data);
+
+// UTILS_EXECUTOR FUNCTIONS
+char	*find_command_path(char *cmd, char **env);
 
 // UTILS FUNCTIONS
 void				init_parser(t_parser *parser, t_token *tokens);
@@ -220,6 +226,7 @@ void				free_tokens(t_token *tokens);
 void				ft_tokenizer_error(t_tokenizer_error err);
 void				ft_expand_error(t_expand_error err);
 void				ft_parser_error(t_parser_error err);
+void				ft_executor_error(t_executor_error err);
 
 // CHILD ERROR FUNCTIONS
 void				handler_error_child(t_child_error code,
@@ -245,7 +252,7 @@ char				*find_command_path(char *cmd, char **env);
 t_prompt_error		handler_error(t_data *data,
 						t_prompt_error error_type);
 void				ft_free_env(char **env);
-t_executor_error	execute(t_data *data);
+
 void				ft_free_all(t_data *data);
 
 // SIGNAL FUNCTIONS

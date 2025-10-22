@@ -6,7 +6,7 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:49:06 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/13 13:01:34 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/22 11:00:13 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,32 @@ void	ft_parser_error(t_parser_error err)
 		ft_putendl_fd("minishell: syntax error near unexpected token `<' or `>'", 2);
 }
 
-void	ft_executor_error(int err)
+void ft_executor_error(t_executor_error err)
 {
-	(void)err;
+	if (err == EXECUTOR_FORK_FAIL)
+		ft_putendl_fd("minishell: fork failed", 2);
+	else if (err == EXECUTOR_PIPE_FAIL)
+		ft_putendl_fd("minishell: pipe creation failed", 2);
+	else if (err == EXECUTOR_CMD_NOT_FOUND)
+		ft_putendl_fd("minishell: command not found", 2);
+	else if (err == EXECUTOR_REDIR_FAIL)
+		ft_putendl_fd("minishell: failed to open file for redirection", 2);
+	else if (err == EXECUTOR_MEMORY_ALLOC)
+		ft_putendl_fd("minishell: memory allocation error during execution", 2);
+	else if (err == EXECUTOR_DUP_FAIL)
+		ft_putendl_fd("minishell: failed to duplicate file descriptor", 2);
 }
 
-
+t_prompt_error	handler_error(t_data *data, t_prompt_error error_type)
+{
+	if (error_type == ERROR_TOKENIZER)
+		ft_tokenizer_error(data->exit_status);
+	else if (error_type == ERROR_EXPAND)
+		ft_expand_error(data->exit_status);
+	else if (error_type == ERROR_PARSER)
+		ft_parser_error(data->exit_status);
+	else if (error_type == ERROR_EXECUTOR)
+		ft_executor_error(data->exit_status);
+	ft_free_all(data);
+	return (PROMPT_CONTINUE);
+}

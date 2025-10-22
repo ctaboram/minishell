@@ -6,7 +6,7 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:05:29 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/09 11:46:44 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/22 10:47:09 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ int	main(int ac, char **av, char **env)
 		if(init_prompt(&data))
 			break ;
 	}
-	// Las estructuras ahora son parte de data, no necesitan free separado
 	free_array(data.env);
 	return (0);
 }

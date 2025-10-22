@@ -6,7 +6,7 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 10:30:00 by nikotina          #+#    #+#             */
-/*   Updated: 2025/10/15 10:30:00 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/22 11:00:21 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,16 +67,3 @@ char	*find_command_path(char *cmd, char **env)
 	free_array(paths);
 	return (NULL);
 }
-
-t_prompt_error	handler_error(t_data *data, t_prompt_error error_type)
-{
-	if (error_type == ERROR_TOKENIZER)
-		ft_tokenizer_error(data->exit_status);
-	else if (error_type == ERROR_EXPAND)
-		ft_expand_error(data->exit_status);
-	else if (error_type == ERROR_PARSER)
-		ft_parser_error(data->exit_status);
-	ft_free_all(data);
-	return (PROMPT_CONTINUE);
-}
-

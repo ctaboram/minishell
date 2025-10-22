@@ -6,7 +6,7 @@
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 11:50:45 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/16 10:52:00 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/22 10:45:14 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,11 +79,7 @@ t_expand_error expand_word(t_data *data)
 	t_expand_error	status;
 	
 	status = 0;
-	// Inicializar la estructura expand con los datos necesarios
-	data->expand.input = data->input;
-	data->expand.env = data->env;
-	data->expand.exit_status = data->exit_status;
-	init_expand(&data->expand);
+	init_expand(data);
 	if (!data->expand.result)
 		return (EXPAND_MEMORY_ALLOC);
 	while (data->expand.input[data->expand.i])
