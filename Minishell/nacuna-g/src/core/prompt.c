@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:07:18 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/22 10:29:25 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/31 14:50:15 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ t_prompt_error	init_prompt(t_data *data)
 	data->input = readline(get_prompt());
 	if (!data->input)
 	{
-		printf("exit\n");
 		free(data->input);
 		return (PROMPT_EOF);
 	}
@@ -45,7 +44,6 @@ t_prompt_error	init_prompt(t_data *data)
 		add_history(data->input);
 	if (ft_strcmp(data->input, "exit") == 0)
 	{
-		printf("exit\n");
 		free(data->input);
 		return (PROMPT_EXIT);
 	}

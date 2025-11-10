@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors_child.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 09:50:29 by nikotina          #+#    #+#             */
-/*   Updated: 2025/10/15 09:51:03 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/31 14:47:53 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	handler_error_child(t_child_error code, const char *context)
 {
 	if (context)
 	{
+		ft_putstr_fd((char *)context, STDERR_FILENO);
 		ft_putstr_fd(": ", STDERR_FILENO);
 
 		if (code == CHILD_CMD_NOT_FOUND)

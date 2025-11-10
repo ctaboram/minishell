@@ -6,7 +6,7 @@
 /*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 11:16:50 by ctaboada          #+#    #+#             */
-/*   Updated: 2025/10/14 11:30:28 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/10/31 14:48:49 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,5 @@ void	exec_builtin(t_data *data, t_cmd *cmd)
 	else if (!ft_strcmp(cmd->av[0], "env"))
 		ft_builtin_env(data->env);
 	else if (!ft_strcmp(cmd->av[0], "exit"))
-	{
-		printf("exit\n");
 		exit(0);
-	}
 }

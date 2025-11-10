@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:42:58 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/22 10:30:05 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/31 14:35:07 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,10 @@ void	init_data(t_data *data, char **env)
 	data->input = NULL;
 	data->exit_status = 0;
 	data->env = NULL;
+	data->pwd = getcwd(NULL,0);
+	if(!data->pwd)
+		data->pwd = ft_strdup("/");
+	data->oldpwd = NULL;
 	cpy_env(data, env);
 	
 	// Inicializar estructura expand

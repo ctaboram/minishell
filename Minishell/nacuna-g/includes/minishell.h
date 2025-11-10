@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:39:52 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/22 11:00:34 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/10/31 14:33:15 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,6 +179,8 @@ typedef struct s_execute
 typedef struct s_data
 {
 	char		**env;
+	char		*pwd;
+	char		*oldpwd;
 	char		*input;
 	int			exit_status;
 	t_expand	expand;

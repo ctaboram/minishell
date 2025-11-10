@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 10:42:44 by ctaboada          #+#    #+#             */
-/*   Updated: 2025/10/16 12:11:18 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/11/06 12:33:10 by ctaboada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,6 @@ int	ft_builtin_cd(char **args, t_data *data)
 				path = data->env[i] + 7;
 			i++;
 		}
-		if (!path)
-		{
-			fprintf(stderr, "cd: OLDPWD not set\n");
-			return (1);
-		}
 		printf("%s\n", path);
 	}
 	else
@@ -85,7 +80,9 @@ int	ft_builtin_cd(char **args, t_data *data)
 	if (!getcwd(newpwd, sizeof(newpwd)))
 	{
 		if (ft_strcmp(path, "..") == 0)
+		{
 			ft_remove_last_dir(oldpwd);
+		}
 		else
 			ft_strjoin_path(oldpwd, path, newpwd);
 	}
