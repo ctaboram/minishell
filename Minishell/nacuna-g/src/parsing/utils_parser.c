@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-void init_parser(t_parser *parser, t_token *tokens)
+void	init_parser(t_parser *parser, t_token *tokens)
 {
 	parser->current = tokens;
 	parser->head = new_cmd();
@@ -21,7 +21,7 @@ void init_parser(t_parser *parser, t_token *tokens)
 
 t_cmd	*new_cmd(void)
 {
-	t_cmd *cmd;
+	t_cmd	*cmd;
 
 	cmd = malloc(sizeof(t_cmd));
 	if (!cmd)
@@ -30,8 +30,10 @@ t_cmd	*new_cmd(void)
 	cmd->redir_in = NULL;
 	cmd->redir_out = NULL;
 	cmd->is_append = 0;
+	cmd->is_heredoc = 0;
+	cmd->heredoc_delim = NULL;
 	cmd->next = NULL;
-	return cmd;
+	return (cmd);
 }
 
 t_parser_error	append_arg(t_cmd *cmd, char *value)
@@ -59,4 +61,60 @@ t_parser_error	append_arg(t_cmd *cmd, char *value)
 	free (cmd->av);
 	cmd->av = new_av;
 	return (PARSER_OK);
+}
+
+int	handle_heredoc(t_cmd *cmd, char *delimiter)
+{
+	char	*line;
+	char	*tmp_file;
+	int		fd;
+
+	g_heredoc_interrupted = 0;
+	setup_heredoc_signals();
+	tmp_file = ft_strdup("/tmp/.heredoc_tmp");
+	if (!tmp_file)
+	{
+		setup_signals();
+		return (-1);
+	}
+	fd = open(tmp_file, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+	if (fd == -1)
+	{
+		free(tmp_file);
+		setup_signals();
+		return (-1);
+	}
+	while (1)
+	{
+		if (g_heredoc_interrupted)
+		{
+			close(fd);
+			unlink("/tmp/.heredoc_tmp");
+			free(tmp_file);
+			setup_signals();
+			return (-1);
+		}
+		line = readline("> ");
+		if (!line)
+		{
+			close(fd);
+			unlink("/tmp/.heredoc_tmp");
+			free(tmp_file);
+			setup_signals();
+			return (-1);
+		}
+		if (ft_strcmp(line, delimiter) == 0)
+		{
+			free(line);
+			break ;
+		}
+		write(fd, line, ft_strlen(line));
+		write(fd, "\n", 1);
+		free(line);
+	}
+	close(fd);
+	setup_signals();
+	cmd->redir_in = tmp_file;
+	cmd->is_heredoc = 1;
+	return (0);
 }

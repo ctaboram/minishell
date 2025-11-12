@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:07:18 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/31 14:50:15 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/10/22 10:29:25 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,26 @@ static char	*get_prompt(void)
 		username = getenv("LOGNAME");
 	if (!username)
 		username = "guest";
-	if(!getcwd(cwd, sizeof(cwd)))
+	if (!getcwd(cwd, sizeof(cwd)))
 		cwd[0] = '\0';
-	snprintf(prompt,MAX_PROMPT_SIZE,BPURPLE"%s@minishell~"YELLOW"%s->"RESET,username,cwd);
-	return(prompt);
+	snprintf(prompt, MAX_PROMPT_SIZE, BPURPLE"%s@minishell~"YELLOW"%s->"
+		RESET, username, cwd);
+	return (prompt);
 }
 
 t_prompt_error	init_prompt(t_data *data)
 {
 	int	status;
-	
+
 	status = 0;
 	data->input = readline(get_prompt());
+	if (g_signal_exit_code != 0)
+	{
+		data->exit_status = g_signal_exit_code;
+	}
 	if (!data->input)
 	{
+		printf("exit\n");
 		free(data->input);
 		return (PROMPT_EOF);
 	}
@@ -44,6 +50,7 @@ t_prompt_error	init_prompt(t_data *data)
 		add_history(data->input);
 	if (ft_strcmp(data->input, "exit") == 0)
 	{
+		printf("exit\n");
 		free(data->input);
 		return (PROMPT_EXIT);
 	}
@@ -64,6 +71,14 @@ t_prompt_error	init_prompt(t_data *data)
 		status = parser_tokens(data);
 		if (status)
 		{
+			if (status == PARSER_HEREDOC_INTERRUPTED)
+			{
+				ft_free_all(data);
+				free(data->input);
+				if (data->expand.input_expanded)
+					free(data->expand.input_expanded);
+				return (PROMPT_CONTINUE);
+			}
 			data->exit_status = status;
 			return (handler_error(data, ERROR_PARSER));
 		}

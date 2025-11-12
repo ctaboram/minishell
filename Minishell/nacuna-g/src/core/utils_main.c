@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:42:58 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/31 14:35:07 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/10/22 10:30:05 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	fatal_error(char *msg)
 
 static void	cpy_env(t_data *data, char **env)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (env[i])
@@ -39,19 +39,50 @@ static void	cpy_env(t_data *data, char **env)
 	data->env[i] = NULL;
 }
 
+static void	increment_shlvl(t_data *data)
+{
+	int		i;
+	int		shlvl;
+	char	*shlvl_str;
+	char	*new_var;
+
+	i = 0;
+	shlvl = 0;
+	while (data->env[i])
+	{
+		if (ft_strncmp(data->env[i], "SHLVL=", 6) == 0)
+		{
+			shlvl = ft_atoi(data->env[i] + 6);
+			if (shlvl < 0)
+				shlvl = 0;
+			shlvl++;
+			shlvl_str = ft_itoa(shlvl);
+			if (!shlvl_str)
+				fatal_error("Error allocating memory for SHLVL");
+			new_var = ft_strjoin("SHLVL=", shlvl_str);
+			free(shlvl_str);
+			if (!new_var)
+				fatal_error("Error allocating memory for SHLVL");
+			free(data->env[i]);
+			data->env[i] = new_var;
+			return ;
+		}
+		i++;
+	}
+	new_var = ft_strdup("SHLVL=1");
+	if (!new_var)
+		fatal_error("Error allocating memory for SHLVL");
+	data->env = add_new_env(data->env, new_var);
+	free(new_var);
+}
+
 void	init_data(t_data *data, char **env)
 {
-	// Inicializar variables principales
 	data->input = NULL;
 	data->exit_status = 0;
 	data->env = NULL;
-	data->pwd = getcwd(NULL,0);
-	if(!data->pwd)
-		data->pwd = ft_strdup("/");
-	data->oldpwd = NULL;
 	cpy_env(data, env);
-	
-	// Inicializar estructura expand
+	increment_shlvl(data);
 	data->expand.result = NULL;
 	data->expand.var = NULL;
 	data->expand.value = NULL;
@@ -61,21 +92,15 @@ void	init_data(t_data *data, char **env)
 	data->expand.input_expanded = NULL;
 	data->expand.env = data->env;
 	data->expand.exit_status = 0;
-	
-	// Inicializar estructura tokenizer
 	data->tokenizer.start = NULL;
 	data->tokenizer.end = NULL;
 	data->tokenizer.input_to_tokenize = NULL;
 	data->tokenizer.tokens = NULL;
-	
-	// Inicializar estructura parser
 	data->parser.current = NULL;
 	data->parser.head = NULL;
 	data->parser.cmd = NULL;
 	data->parser.tokens = NULL;
 	data->parser.cmds_list = NULL;
-	
-	// Inicializar estructura execute
 	data->execute.cmds_list = NULL;
 	data->execute.env = data->env;
 	data->execute.exit_status = 0;

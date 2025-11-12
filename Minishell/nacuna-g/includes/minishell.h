@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:39:52 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/31 14:33:15 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/10/22 11:00:34 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <sys/types.h>
+# include <sys/ioctl.h>
 # include <limits.h>
 
 # define BPURPLE			"\001\033[1;35m\002"
@@ -44,6 +45,9 @@
                              \033[1;34mBy\033[0m                   \n\
 \t\t--- \033[1;36mctaboada\033[0m && \033[1;36mnacuna-g\033[0m --- \n\
 \n"
+
+extern int	g_signal_exit_code;
+extern int	g_heredoc_interrupted;
 
 // ERRORS
 typedef enum e_prompt
@@ -72,6 +76,7 @@ typedef enum e_parser_error
 	PARSER_SYNTAX_REDIR,
 	PARSER_SYNTAX_PIPE,
 	PARSER_MEMORY_ALLOC,
+	PARSER_HEREDOC_INTERRUPTED,
 }	t_parser_error;
 
 typedef enum e_expand_error
@@ -120,6 +125,7 @@ typedef struct s_token
 	char			*value;
 	t_token_type	type;
 	struct s_token	*next;
+	struct s_token	*prev;
 }	t_token;
 
 typedef struct s_cmd
@@ -128,6 +134,8 @@ typedef struct s_cmd
 	char			*redir_in;
 	char			*redir_out;
 	int				is_append;
+	int				is_heredoc;
+	char			*heredoc_delim;
 	struct s_cmd	*next;
 }	t_cmd;
 
@@ -179,8 +187,6 @@ typedef struct s_execute
 typedef struct s_data
 {
 	char		**env;
-	char		*pwd;
-	char		*oldpwd;
 	char		*input;
 	int			exit_status;
 	t_expand	expand;
@@ -212,12 +218,13 @@ t_parser_error		parser_tokens(t_data *data);
 // UTILS_PARSER FUNCTIONS
 t_parser_error		append_arg(t_cmd *cmd, char *value);
 t_cmd				*new_cmd(void);
+int					handle_heredoc(t_cmd *cmd, char *delimiter);
 
 // EXECUTOR FUNCTIONS
 t_executor_error	execute(t_data *data);
 
 // UTILS_EXECUTOR FUNCTIONS
-char	*find_command_path(char *cmd, char **env);
+char				*find_command_path(char *cmd, char **env);
 
 // UTILS FUNCTIONS
 void				init_parser(t_parser *parser, t_token *tokens);
@@ -232,7 +239,7 @@ void				ft_executor_error(t_executor_error err);
 
 // CHILD ERROR FUNCTIONS
 void				handler_error_child(t_child_error code,
-						const char *context);
+						char *context);
 
 // FREE FUNCTIONS
 void				free_array(char **array);
@@ -244,6 +251,7 @@ int					ft_builtin_cd(char **args, t_data *data);
 int					ft_builtin_pwd(void);
 int					ft_builtin_echo(char **args);
 int					ft_builtin_env(char **env);
+void				ft_builtin_exit(char **args, t_data *data);
 char				**ft_builtin_export(char **args, char **env);
 char				**ft_builtin_unset(char **args, char **env);
 char				**dup_env(char **env);
@@ -261,5 +269,6 @@ void				ft_free_all(t_data *data);
 void				setup_signals(void);
 void				setup_child_signals(void);
 void				setup_exec_signals(void);
+void				setup_heredoc_signals(void);
 
 #endif

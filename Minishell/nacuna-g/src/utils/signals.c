@@ -15,6 +15,7 @@
 static void	handle_sigint(int sig)
 {
 	(void)sig;
+	g_signal_exit_code = 130;
 	write(STDOUT_FILENO, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();
@@ -48,6 +49,21 @@ void	setup_child_signals(void)
 void	setup_exec_signals(void)
 {
 	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
+}
+
+static void	handle_sigint_heredoc(int sig)
+{
+	(void)sig;
+	g_signal_exit_code = 130;
+	g_heredoc_interrupted = 1;
+	ioctl(STDIN_FILENO, TIOCSTI, "\n");
+}
+
+void	setup_heredoc_signals(void)
+{
+	signal(SIGINT, handle_sigint_heredoc);
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGTSTP, SIG_IGN);
 }

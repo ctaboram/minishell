@@ -52,9 +52,17 @@ static int	handle_redir_in_parser(t_parser *parser)
 	if (!parser->current->next || parser->current->next->type != TOKEN_WORD)
 		return (PARSER_SYNTAX_REDIR);
 	parser->current = parser->current->next;
-	parser->cmd->redir_in = ft_strdup(parser->current->value);
-	if (!parser->cmd->redir_in)
-		return (PARSER_MEMORY_ALLOC);
+	if (parser->current->prev && parser->current->prev->type == TOKEN_HEREDOC)
+	{
+		if (handle_heredoc(parser->cmd, parser->current->value) == -1)
+			return (PARSER_HEREDOC_INTERRUPTED);
+	}
+	else
+	{
+		parser->cmd->redir_in = ft_strdup(parser->current->value);
+		if (!parser->cmd->redir_in)
+			return (PARSER_MEMORY_ALLOC);
+	}
 	return (PARSER_OK);
 }
 

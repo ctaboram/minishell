@@ -12,27 +12,27 @@
 
 #include "../includes/minishell.h"
 
-void free_cmds(t_cmd *cmd)
+void	free_cmds(t_cmd *cmd)
 {
-	t_cmd *tmp;
+	t_cmd	*tmp;
+	int		i;
 
 	while (cmd)
 	{
 		tmp = cmd->next;
 		if (cmd->av)
 		{
-			int i = 0;
+			i = 0;
 			while (cmd->av[i])
 				free(cmd->av[i++]);
 			free(cmd->av);
 		}
 		free(cmd->redir_in);
 		free(cmd->redir_out);
-		free(cmd);
+	free(cmd);
 		cmd = tmp;
 	}
 }
-
 
 void	free_tokens(t_token *tokens)
 {
@@ -51,23 +51,17 @@ void	free_tokens(t_token *tokens)
 
 void	ft_free_all(t_data *data)
 {
-	// Liberar tokens del tokenizer
 	if (data->tokenizer.tokens)
 		free_tokens(data->tokenizer.tokens);
-	// Liberar comandos del parser
 	if (data->parser.cmds_list)
 		free_cmds(data->parser.cmds_list);
-	// Liberar input expandido
 	if (data->expand.input_expanded)
 		free(data->expand.input_expanded);
-	
-	// Resetear punteros
 	data->tokenizer.tokens = NULL;
 	data->parser.cmds_list = NULL;
 	data->expand.input_expanded = NULL;
 	data->execute.cmds_list = NULL;
 }
-
 
 void	free_array(char **array)
 {

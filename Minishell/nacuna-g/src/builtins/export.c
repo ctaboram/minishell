@@ -78,7 +78,8 @@ void	ft_export_print(char **env)
 	sorted = dup_env(env);
 	if (!sorted)
 	{
-		printf("export: memory allocation failed\n");
+		ft_putendl_fd("minishell: export: memory allocation failed",
+			STDERR_FILENO);
 		return ;
 	}
 	i = 0;
@@ -123,7 +124,8 @@ char	**ft_builtin_export(char **arg, char **env)
 		env_copy = dup_env(env);
 		if (!env_copy)
 		{
-			printf("export: failed to duplicate environment\n");
+			ft_putendl_fd("minishell: export: failed to duplicate environment",
+				STDERR_FILENO);
 			return (env);
 		}
 		ft_export_print(env_copy);
@@ -133,12 +135,17 @@ char	**ft_builtin_export(char **arg, char **env)
 	while (arg[i])
 	{
 		if (!is_valid_identifier(arg[i]))
-			printf("export: `%s': not a valid identifier\n", arg[i]);
+		{
+			ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+			ft_putstr_fd(arg[i], STDERR_FILENO);
+			ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
+		}
 		else
 		{
 			temp_env = add_or_update_env(new_env, arg[i]);
 			if (!temp_env)
-				printf("export: failed to add/update variable\n");
+				ft_putendl_fd("minishell: export: error to add/update variable",
+					STDERR_FILENO);
 			else
 				new_env = temp_env;
 		}

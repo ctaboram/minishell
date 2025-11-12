@@ -3,22 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   errors_child.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ctaboada <ctaboada@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 09:50:29 by nikotina          #+#    #+#             */
-/*   Updated: 2025/10/31 14:47:53 by ctaboada         ###   ########.fr       */
+/*   Updated: 2025/10/15 09:51:03 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	handler_error_child(t_child_error code, const char *context)
+void	handler_error_child(t_child_error code, char *context)
 {
 	if (context)
 	{
-		ft_putstr_fd((char *)context, STDERR_FILENO);
+		ft_putstr_fd(context, STDERR_FILENO);
 		ft_putstr_fd(": ", STDERR_FILENO);
-
 		if (code == CHILD_CMD_NOT_FOUND)
 			ft_putendl_fd("command not found", STDERR_FILENO);
 		else if (code == CHILD_EXEC_FAIL)

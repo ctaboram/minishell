@@ -40,7 +40,7 @@ void	ft_parser_error(t_parser_error err)
 		ft_putendl_fd("minishell: syntax error near unexpected token `<' or `>'", 2);
 }
 
-void ft_executor_error(t_executor_error err)
+void	ft_executor_error(t_executor_error err)
 {
 	if (err == EXECUTOR_FORK_FAIL)
 		ft_putendl_fd("minishell: fork failed", 2);

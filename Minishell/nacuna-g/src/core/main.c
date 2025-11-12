@@ -12,6 +12,9 @@
 
 #include "../includes/minishell.h"
 
+int	g_signal_exit_code = 0;
+int	g_heredoc_interrupted = 0;
+
 int	main(int ac, char **av, char **env)
 {
 	t_data	data;
@@ -23,7 +26,7 @@ int	main(int ac, char **av, char **env)
 	setup_signals();
 	while (1)
 	{
-		if(init_prompt(&data))
+		if (init_prompt(&data))
 			break ;
 	}
 	free_array(data.env);

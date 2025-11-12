@@ -36,7 +36,8 @@ BUILTIN_SRCS= $(SRC_DIR)/builtins/builtins.c \
 			  $(SRC_DIR)/builtins/pwd.c \
 			  $(SRC_DIR)/builtins/unset.c \
 			  $(SRC_DIR)/builtins/export.c \
-			  $(SRC_DIR)/builtins/utils_export.c
+			  $(SRC_DIR)/builtins/utils_export.c \
+			  $(SRC_DIR)/builtins/exit.c
 
 # Utils files
 UTILS_SRCS	= $(SRC_DIR)/utils/errors.c \

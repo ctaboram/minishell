@@ -31,7 +31,7 @@ char	*find_command_path(char *cmd, char **env)
 		if (ft_strncmp(env[i], "PATH=", 5) == 0)
 		{
 			path_env = env[i] + 5;
-			break;
+			break ;
 		}
 		i++;
 	}

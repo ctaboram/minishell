@@ -23,7 +23,8 @@ int	ft_builtin_pwd(void)
 	}
 	else
 	{
-		perror("pwd");
+		ft_putstr_fd("minishell: pwd: ", STDERR_FILENO);
+		ft_putendl_fd("error retrieving current directory", STDERR_FILENO);
 		return (1);
 	}
 }

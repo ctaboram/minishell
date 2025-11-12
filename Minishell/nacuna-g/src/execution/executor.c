@@ -55,11 +55,12 @@ static t_executor_error	exec_single(t_data *data, t_cmd *cmd)
 	if (cmd->av && cmd->av[0] && is_builtin(cmd->av[0]) && !cmd->redir_in && !cmd->redir_out)
 	{
 		exec_builtin(data, cmd);
+		data->execute.exit_status = data->exit_status;
 		return (EXECUTOR_OK);
 	}
 	if (!cmd->av || !cmd->av[0])
 	{
-		data->exit_status = 127;
+		data->execute.exit_status = 127;
 		return (EXECUTOR_CMD_NOT_FOUND);
 	}
 	setup_exec_signals();
@@ -89,10 +90,10 @@ static t_executor_error	exec_single(t_data *data, t_cmd *cmd)
 	waitpid(pid, &status, WUNTRACED);
 	setup_signals();
 	if (WIFEXITED(status))
-		data->exit_status = WEXITSTATUS(status);
+		data->execute.exit_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
 	{
-		data->exit_status = 128 + WTERMSIG(status);
+		g_signal_exit_code = 128 + WTERMSIG(status);
 		if (WTERMSIG(status) == SIGINT)
 			write(STDOUT_FILENO, "\n", 1);
 		else if (WTERMSIG(status) == SIGQUIT)
@@ -100,12 +101,12 @@ static t_executor_error	exec_single(t_data *data, t_cmd *cmd)
 	}
 	else if (WIFSTOPPED(status))
 	{
-		data->exit_status = 128 + WSTOPSIG(status);
+		g_signal_exit_code = 128 + WSTOPSIG(status);
 		write(STDOUT_FILENO, "\n", 1);
 		write(STDOUT_FILENO, "[1]+  Stopped\n", 15);
 	}
 	else
-		data->exit_status = 1;
+		data->execute.exit_status = 1;
 	return (EXECUTOR_OK);
 }
 
@@ -174,10 +175,10 @@ static t_executor_error	exec_pipeline(t_data *data, t_cmd *cmd)
 		if (pid == last_pid)
 		{
 			if (WIFEXITED(wstatus))
-				data->exit_status = WEXITSTATUS(wstatus);
+				data->execute.exit_status = WEXITSTATUS(wstatus);
 			else if (WIFSIGNALED(wstatus))
 			{
-				data->exit_status = 128 + WTERMSIG(wstatus);
+				g_signal_exit_code = 128 + WTERMSIG(wstatus);
 				if (WTERMSIG(wstatus) == SIGINT)
 					write(STDOUT_FILENO, "\n", 1);
 				else if (WTERMSIG(wstatus) == SIGQUIT)
@@ -185,15 +186,15 @@ static t_executor_error	exec_pipeline(t_data *data, t_cmd *cmd)
 			}
 			else if (WIFSTOPPED(wstatus))
 			{
-				data->exit_status = 128 + WSTOPSIG(wstatus);
+				g_signal_exit_code = 128 + WSTOPSIG(wstatus);
 				write(STDOUT_FILENO, "\n", 1);
 				write(STDOUT_FILENO, "[1]+  Stopped\n", 15);
 			}
 		}
 	}
 	setup_signals();
-	if (data->exit_status == 0)
-		data->exit_status = 1;
+	if (data->execute.exit_status == 0)
+		data->execute.exit_status = 1;
 	return (EXECUTOR_OK);
 }
 
@@ -216,6 +217,12 @@ t_executor_error	execute(t_data *data)
 		status = exec_pipeline(data, data->execute.cmds_list);
 	
 	// Actualizar exit_status en data principal
-	data->exit_status = data->execute.exit_status;
+	if (g_signal_exit_code != 0)
+	{
+		data->exit_status = g_signal_exit_code;
+		g_signal_exit_code = 0;
+	}
+	else
+		data->exit_status = data->execute.exit_status;
 	return (status);
 }

@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-void init_expand(t_data *data)
+void	init_expand(t_data *data)
 {
 	data->expand.input = data->input;
 	data->expand.env = data->env;
