@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:12:21 by nikotina          #+#    #+#             */
-/*   Updated: 2025/10/15 10:14:10 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/11/13 11:25:27 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,6 @@ t_executor_error	execute(t_data *data)
 	t_executor_error	status;
 
 	status = EXECUTOR_OK;
-	// Inicializar la estructura execute con los datos necesarios
 	data->execute.cmds_list = data->parser.cmds_list;
 	data->execute.env = data->env;
 	data->execute.exit_status = data->exit_status;
@@ -215,8 +214,6 @@ t_executor_error	execute(t_data *data)
 		status = exec_single(data, data->execute.cmds_list);
 	else
 		status = exec_pipeline(data, data->execute.cmds_list);
-	
-	// Actualizar exit_status en data principal
 	if (g_signal_exit_code != 0)
 	{
 		data->exit_status = g_signal_exit_code;

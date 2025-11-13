@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 12:55:42 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/14 12:44:32 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/11/13 11:25:56 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ t_parser_error	parser_tokens(t_data *data)
 	t_parser_error	status;
 
 	status = 0;
-	// Inicializar la estructura parser con los tokens del tokenizer
 	data->parser.tokens = data->tokenizer.tokens;
 	init_parser(&data->parser, data->parser.tokens);
 	while (data->parser.current && data->parser.current->type != TOKEN_EOF)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:49:06 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/22 11:00:13 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/11/13 11:33:22 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ void	ft_tokenizer_error(t_tokenizer_error err)
 	else if (err == TOK_UNCLOSED_QUOTE)
 		ft_putendl_fd("minishell: syntax error: unclosed quote", 2);
 	else if (err == TOK_SYNTAX_PIPE)
-		ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
+		ft_putendl_fd("minishell: syntax error near unexpected token '|'", 2);
 	else if (err == TOK_SYNTAX_REDIR)
-		ft_putendl_fd("minishell: syntax error near unexpected token `<' or `>'", 2);
+		ft_putendl_fd("minishell: syntax error near '<' or '>'", 2);
 }
 
 void	ft_expand_error(t_expand_error err)
@@ -35,9 +35,9 @@ void	ft_parser_error(t_parser_error err)
 	if (err == PARSER_MEMORY_ALLOC)
 		ft_putendl_fd("minishell: memory allocation error during parsing", 2);
 	else if (err == PARSER_SYNTAX_PIPE)
-		ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
+		ft_putendl_fd("minishell: syntax error near unexpected token '|'", 2);
 	else if (err == PARSER_SYNTAX_REDIR)
-		ft_putendl_fd("minishell: syntax error near unexpected token `<' or `>'", 2);
+		ft_putendl_fd("minishell: syntax error near '<' or '>'", 2);
 }
 
 void	ft_executor_error(t_executor_error err)

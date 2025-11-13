@@ -1,0 +1,9 @@
+{
+	"json.format.enable": true,
+	"editor.rulers": [
+		80
+	],
+	"files.associations": {
+		"minishell.h": "c"
+	}
+}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:39:52 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/22 11:00:34 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/11/13 10:05:51 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,6 +230,9 @@ char				*find_command_path(char *cmd, char **env);
 void				init_parser(t_parser *parser, t_token *tokens);
 void				init_data(t_data *data, char **env);
 void				free_tokens(t_token *tokens);
+void				increment_shlvl(t_data *data);
+void				fatal_error(char *msg);
+void				cpy_env(t_data *data, char **env);
 
 // ERROR FUNCTIONS
 void				ft_tokenizer_error(t_tokenizer_error err);

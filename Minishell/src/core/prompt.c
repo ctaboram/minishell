@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:07:18 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/22 10:29:25 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/11/13 09:43:59 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,16 +30,11 @@ static char	*get_prompt(void)
 	return (prompt);
 }
 
-t_prompt_error	init_prompt(t_data *data)
+static t_prompt_error	handle_input(t_data *data)
 {
-	int	status;
-
-	status = 0;
 	data->input = readline(get_prompt());
 	if (g_signal_exit_code != 0)
-	{
 		data->exit_status = g_signal_exit_code;
-	}
 	if (!data->input)
 	{
 		printf("exit\n");
@@ -54,37 +49,48 @@ t_prompt_error	init_prompt(t_data *data)
 		free(data->input);
 		return (PROMPT_EXIT);
 	}
+	return (PROMPT_CONTINUE);
+}
+
+static t_prompt_error	handle_parsing_and_exec(t_data *data)
+{
+	int	status;
+
+	status = expand_word(data);
+	if (status)
+		return (handler_error(data, ERROR_EXPAND));
+	status = tokenizer(data);
+	if (status)
+		return (handler_error(data, ERROR_TOKENIZER));
+	status = parser_tokens(data);
+	if (status)
+	{
+		if (status == PARSER_HEREDOC_INTERRUPTED)
+		{
+			ft_free_all(data);
+			free(data->input);
+			if (data->expand.input_expanded)
+				free(data->expand.input_expanded);
+			return (PROMPT_CONTINUE);
+		}
+		return (handler_error(data, ERROR_PARSER));
+	}
+	status = execute(data);
+	if (status)
+		return (handler_error(data, ERROR_EXECUTOR));
+	return (PROMPT_CONTINUE);
+}
+
+t_prompt_error	init_prompt(t_data *data)
+{
+	t_prompt_error	result;
+
+	result = handle_input(data);
+	if (result != PROMPT_CONTINUE)
+		return (result);
 	if (ft_strcmp(data->input, ""))
 	{
-		status = expand_word(data);
-		if (status)
-		{
-			data->exit_status = status;
-			return (handler_error(data, ERROR_EXPAND));
-		}
-		status = tokenizer(data);
-		if (status)
-		{
-			data->exit_status = status;
-			return (handler_error(data, ERROR_TOKENIZER));
-		}
-		status = parser_tokens(data);
-		if (status)
-		{
-			if (status == PARSER_HEREDOC_INTERRUPTED)
-			{
-				ft_free_all(data);
-				free(data->input);
-				if (data->expand.input_expanded)
-					free(data->expand.input_expanded);
-				return (PROMPT_CONTINUE);
-			}
-			data->exit_status = status;
-			return (handler_error(data, ERROR_PARSER));
-		}
-		status = execute(data);
-		if (status)
-			return (handler_error(data, ERROR_EXECUTOR));
+		result = handle_parsing_and_exec(data);
 		ft_free_all(data);
 	}
 	free(data->input);

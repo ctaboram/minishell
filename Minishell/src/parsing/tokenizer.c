@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:33:17 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/15 11:46:33 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/11/13 11:26:00 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,6 @@ t_tokenizer_error	tokenizer(t_data *data)
 
 	if (!data)
 		return (TOK_MEMORY_ALLOC);
-	// Usar input_expanded si está disponible, sino usar input original
 	if (data->expand.input_expanded)
 		data->tokenizer.input_to_tokenize = data->expand.input_expanded;
 	else

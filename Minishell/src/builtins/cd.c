@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 10:42:44 by ctaboada          #+#    #+#             */
-/*   Updated: 2025/10/16 12:11:18 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/11/13 09:42:32 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,18 +62,19 @@ static int	find_valid_parent(char *oldpwd, char *newpwd)
 
 int	ft_builtin_cd(char **args, t_data *data)
 {
-	char	oldpwd[MAX_PROMPT_SIZE];
-	char	newpwd[MAX_PROMPT_SIZE];
-	char	*path;
-	char	*oldpwd_str;
-	char	*pwd_str;
-	int		i;
+	char		oldpwd[MAX_PROMPT_SIZE];
+	char		newpwd[MAX_PROMPT_SIZE];
+	char		*path;
+	char		*oldpwd_str;
+	char		*pwd_str;
+	int			i;
 	struct stat	st;
-
+	char *pwd_env;
+	
 	i = 0;
 	if (!getcwd(oldpwd, sizeof(oldpwd)))
 	{
-		char *pwd_env = NULL;
+		pwd_env = NULL;
 		while (data->env[i])
 		{
 			if (ft_strncmp(data->env[i], "PWD=", 4) == 0)
