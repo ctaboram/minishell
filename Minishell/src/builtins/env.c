@@ -30,32 +30,44 @@ int	ft_builtin_env(char **env)
 	return (0);
 }
 
+static void	free_env_array(char **env, int up_to)
+{
+	while (--up_to >= 0)
+		free(env[up_to]);
+	free(env);
+}
+
+static int	count_env(char **env)
+{
+	int	count;
+
+	count = 0;
+	while (env[count])
+		count++;
+	return (count);
+}
+
 char	**dup_env(char **env)
 {
-	int		count;
 	char	**new_env;
+	int		count;
 	int		i;
 
 	if (!env)
 		return (NULL);
-	count = 0;
-	while (env[count])
-		count++;
+	count = count_env(env);
 	new_env = (char **)malloc((count + 1) * sizeof(char *));
 	if (!new_env)
 		return (NULL);
-	i = 0;
-	while (i < count)
+	i = -1;
+	while (++i < count)
 	{
 		new_env[i] = ft_strdup(env[i]);
 		if (!new_env[i])
 		{
-			while (--i >= 0)
-				free(new_env[i]);
-			free(new_env);
+			free_env_array(new_env, i);
 			return (NULL);
 		}
-		i++;
 	}
 	new_env[count] = NULL;
 	return (new_env);

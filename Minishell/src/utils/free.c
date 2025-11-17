@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 12:45:38 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/11/13 11:42:56 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/15 11:46:05 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	free_cmds(t_cmd *cmd)
 		}
 		free(cmd->redir_in);
 		free(cmd->redir_out);
+		free(cmd->heredoc_delim);
 		free(cmd);
 		cmd = tmp;
 	}

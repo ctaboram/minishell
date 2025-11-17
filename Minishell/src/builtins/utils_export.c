@@ -12,93 +12,86 @@
 
 #include "../includes/minishell.h"
 
-int	is_valid_identifier(char *arg)
+int	ft_is_sorted(char **env, int count)
 {
 	int	i;
 
-	if (!arg || !arg[0] || (!ft_isalpha(arg[0]) && arg[0] != '_'))
-		return (0);
-	i = 1;
-	while (arg[i] && arg[i] != '=')
+	i = 0;
+	if (!env)
+		return (1);
+	while (i < count - 1)
 	{
-		if (!ft_isalnum(arg[i]) && arg[i] != '_')
+		if (env[i] && env[i + 1] && ft_strcmp(env[i], env[i + 1]) > 0)
 			return (0);
 		i++;
 	}
 	return (1);
 }
 
-char	**add_new_env(char **env, char *new_var)
+void	ft_sort_env(char **env, int count)
 {
-	int		count;
-	char	**new_env;
 	int		i;
+	char	*tmp;
 
-	count = 0;
-	while (env && env[count])
-		count++;
-	new_env = malloc((count + 2) * sizeof(char *));
-	if (!new_env)
-		return (NULL);
-	i = 0;
-	while (i < count)
+	if (!env)
+		return ;
+	while (!ft_is_sorted(env, count))
 	{
-		new_env[i] = ft_strdup(env[i]);
-		if (!new_env[i])
+		i = 0;
+		while (i < count - 1)
 		{
-			while (--i >= 0)
-				free(new_env[i]);
-			free(new_env);
-			return (NULL);
+			if (env[i] && env[i + 1] && ft_strcmp(env[i], env[i + 1]) > 0)
+			{
+				tmp = env[i];
+				env[i] = env[i + 1];
+				env[i + 1] = tmp;
+			}
+			i++;
 		}
-		i++;
 	}
-	new_env[count] = ft_strdup(new_var);
-	if (!new_env[count])
+}
+
+void	free_old_env(char **env)
+{
+	int	j;
+
+	j = 0;
+	while (env && env[j])
 	{
-		while (i--)
-			free(new_env[i]);
-		free(new_env);
-		return (NULL);
+		free(env[j]);
+		j++;
 	}
-	new_env[count + 1] = NULL;
-	return (new_env);
+	free(env);
+}
+
+char	*extract_key(char *var)
+{
+	char	*equal_sign;
+	char	*key;
+
+	equal_sign = ft_strchr(var, '=');
+	if (!equal_sign)
+		return (NULL);
+	key = ft_substr(var, 0, equal_sign - var);
+	return (key);
 }
 
 char	**add_or_update_env(char **env, char *var)
 {
 	int		i;
 	char	*key;
-	char	*equal_sign;
 	char	**new_env;
-	char	*temp;
-	int		j;
 
-	i = 0;
 	if (!var)
 		return (env);
-	equal_sign = ft_strchr(var, '=');
-	if (!equal_sign)
-		return (env);
-	key = ft_substr(var, 0, equal_sign - var);
+	key = extract_key(var);
 	if (!key)
 		return (env);
+	i = 0;
 	while (env && env[i])
 	{
-		if (ft_strncmp(env[i], key, ft_strlen(key)) == 0
-			&& (env[i][ft_strlen(key)] == '=' || env[i][ft_strlen(key)] == '\0'))
-		{
-			temp = ft_strdup(var);
-			if (!temp)
-			{
-				free(key);
-				return (env);
-			}
-			free(env[i]);
-			env[i] = temp;
-			free(key);
-			return (env);
-		}
+		if (is_matching_key(env[i], key))
+			return (update_existing_var(env, var, key, i));
 		i++;
 	}
 	new_env = add_new_env(env, var);
@@ -106,14 +99,6 @@ char	**add_or_update_env(char **env, char *var)
 	if (!new_env)
 		return (env);
 	if (new_env != env)
-	{
-		j = 0;
-		while (env && env[j])
-		{
-			free(env[j]);
-			j++;
-		}
-		free(env);
-	}
+		free_old_env(env);
 	return (new_env);
 }

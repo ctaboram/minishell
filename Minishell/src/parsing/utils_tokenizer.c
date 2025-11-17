@@ -37,6 +37,7 @@ t_token	*create_token(char *value, t_token_type type)
 void	add_token(t_token **tokens, t_token *token)
 {
 	t_token	*current;
+
 	if (!token)
 		return ;
 	if (!*tokens)

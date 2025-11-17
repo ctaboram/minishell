@@ -65,55 +65,23 @@ t_parser_error	append_arg(t_cmd *cmd, char *value)
 
 int	handle_heredoc(t_cmd *cmd, char *delimiter)
 {
-	char	*line;
 	char	*tmp_file;
 	int		fd;
+	int		saved_exit_code;
 
-	g_heredoc_interrupted = 0;
+	saved_exit_code = g_signal_exit_code;
+	g_signal_exit_code = 0;
 	setup_heredoc_signals();
-	tmp_file = ft_strdup("/tmp/.heredoc_tmp");
-	if (!tmp_file)
-	{
-		setup_signals();
-		return (-1);
-	}
-	fd = open(tmp_file, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+	fd = open_heredoc_file(&tmp_file, saved_exit_code);
 	if (fd == -1)
+		return (-1);
+	if (read_heredoc_lines(fd, delimiter, tmp_file) == -1)
 	{
-		free(tmp_file);
 		setup_signals();
 		return (-1);
 	}
-	while (1)
-	{
-		if (g_heredoc_interrupted)
-		{
-			close(fd);
-			unlink("/tmp/.heredoc_tmp");
-			free(tmp_file);
-			setup_signals();
-			return (-1);
-		}
-		line = readline("> ");
-		if (!line)
-		{
-			close(fd);
-			unlink("/tmp/.heredoc_tmp");
-			free(tmp_file);
-			setup_signals();
-			return (-1);
-		}
-		if (ft_strcmp(line, delimiter) == 0)
-		{
-			free(line);
-			break ;
-		}
-		write(fd, line, ft_strlen(line));
-		write(fd, "\n", 1);
-		free(line);
-	}
-	close(fd);
 	setup_signals();
+	g_signal_exit_code = saved_exit_code;
 	cmd->redir_in = tmp_file;
 	cmd->is_heredoc = 1;
 	return (0);

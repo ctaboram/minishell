@@ -1,33 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   utils_executor4.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/24 12:05:29 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/22 10:47:09 by nikotina         ###   ########.fr       */
+/*   Created: 2025/10/22 15:20:00 by nikotina          #+#    #+#             */
+/*   Updated: 2025/10/22 15:20:00 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	g_signal_exit_code = 0;
-
-int	main(int ac, char **av, char **env)
+void	update_exit_status(t_data *data)
 {
-	t_data	data;
-
-	(void)ac;
-	(void)av;
-	printf(HEADER);
-	init_data(&data, env);
-	setup_signals();
-	while (1)
+	if (g_signal_exit_code != 0)
 	{
-		if (init_prompt(&data))
-			break ;
+		data->exit_status = g_signal_exit_code;
+		g_signal_exit_code = 0;
 	}
-	free_array(data.env);
-	return (0);
+	else
+		data->exit_status = data->execute.exit_status;
 }

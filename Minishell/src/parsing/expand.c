@@ -57,71 +57,67 @@ static t_expand_error	get_var_name(t_expand *ex, char *word)
 	return (EXPAND_OK);
 }
 
-static t_expand_error	append_segment(t_expand *ex, char *start, int len)
+t_expand_error	expand_variable(t_data *data)
 {
-	char	*segment;
 	char	*tmp;
+	int		status;
 
-	segment = ft_strndup(start, len);
-	if (!segment)
+	status = get_var_name(&data->expand, data->expand.input);
+	if (status != EXPAND_OK)
+		return (status);
+	if (ft_strcmp(data->expand.var, "?") == 0)
+		data->expand.value = ft_itoa(data->expand.exit_status);
+	else
+		data->expand.value = get_env_value(data->expand.var, data->expand.env);
+	if (!data->expand.value)
 		return (EXPAND_MEMORY_ALLOC);
-	tmp = ft_strjoin_free(ex->result, segment);
-	free(segment);
+	tmp = ft_strjoin_free(data->expand.result, data->expand.value);
 	if (!tmp)
 		return (EXPAND_MEMORY_ALLOC);
-	ex->result = tmp;
+	data->expand.result = tmp;
+	free(data->expand.var);
+	free(data->expand.value);
 	return (EXPAND_OK);
 }
 
-t_expand_error expand_word(t_data *data)
+static t_expand_error	process_text_and_vars(t_data *data)
 {
-	char			*tmp;
 	t_expand_error	status;
-	
-	status = 0;
-	init_expand(data);
-	if (!data->expand.result)
-		return (EXPAND_MEMORY_ALLOC);
+
 	while (data->expand.input[data->expand.i])
 	{
 		data->expand.start = data->expand.i;
-		while (data->expand.input[data->expand.i] && data->expand.input[data->expand.i] != '$')
+		while (data->expand.input[data->expand.i]
+			&& data->expand.input[data->expand.i] != '$')
 			data->expand.i++;
 		if (data->expand.i > data->expand.start)
 		{
-			status = append_segment(&data->expand, data->expand.input + data->expand.start, data->expand.i - data->expand.start);
+			status = append_segment(&data->expand,
+					data->expand.input + data->expand.start,
+					data->expand.i - data->expand.start);
 			if (status != EXPAND_OK)
 				return (status);
 		}
 		if (data->expand.input[data->expand.i] == '$')
 		{
-			data->expand.i++;
-			if (data->expand.input[data->expand.i] == '\0' || data->expand.input[data->expand.i] == ' ')
-			{
-				data->expand.result = ft_strjoin_free(data->expand.result, "$");
-				if (!data->expand.result)
-					return (EXPAND_MEMORY_ALLOC);
-			}
-			else
-			{
-				status = get_var_name(&data->expand, data->expand.input);
-				if (status != EXPAND_OK)
-					return (status);
-				if (ft_strcmp(data->expand.var, "?") == 0)
-					data->expand.value = ft_itoa(data->expand.exit_status);
-				else
-					data->expand.value = get_env_value(data->expand.var, data->expand.env);
-				if (!data->expand.value)
-					return (EXPAND_MEMORY_ALLOC);
-				tmp = ft_strjoin_free(data->expand.result, data->expand.value);
-				if (!tmp)
-					return (EXPAND_MEMORY_ALLOC);
-				data->expand.result = tmp;
-				free(data->expand.var);
-				free(data->expand.value);
-			}
+			status = handle_dollar(data);
+			if (status != EXPAND_OK)
+				return (status);
 		}
 	}
+	return (EXPAND_OK);
+}
+
+t_expand_error	expand_word(t_data *data)
+{
+	t_expand_error	status;
+
+	init_expand(data);
+	if (!data->expand.result)
+		return (EXPAND_MEMORY_ALLOC);
+	status = process_text_and_vars(data);
+	if (status != EXPAND_OK)
+		return (status);
 	data->expand.input_expanded = data->expand.result;
 	return (EXPAND_OK);
 }

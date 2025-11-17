@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:49:06 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/11/13 11:33:22 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/22 11:00:13 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,10 @@ void	ft_tokenizer_error(t_tokenizer_error err)
 	else if (err == TOK_UNCLOSED_QUOTE)
 		ft_putendl_fd("minishell: syntax error: unclosed quote", 2);
 	else if (err == TOK_SYNTAX_PIPE)
-		ft_putendl_fd("minishell: syntax error near unexpected token '|'", 2);
+		ft_putendl_fd("minishell: syntax error near unexpected token `|'",
+			2);
 	else if (err == TOK_SYNTAX_REDIR)
-		ft_putendl_fd("minishell: syntax error near '<' or '>'", 2);
+		ft_putendl_fd("minishell: syntax error near token `<' or `>'", 2);
 }
 
 void	ft_expand_error(t_expand_error err)
@@ -35,9 +36,10 @@ void	ft_parser_error(t_parser_error err)
 	if (err == PARSER_MEMORY_ALLOC)
 		ft_putendl_fd("minishell: memory allocation error during parsing", 2);
 	else if (err == PARSER_SYNTAX_PIPE)
-		ft_putendl_fd("minishell: syntax error near unexpected token '|'", 2);
+		ft_putendl_fd("minishell: syntax error near unexpected token `|'",
+			2);
 	else if (err == PARSER_SYNTAX_REDIR)
-		ft_putendl_fd("minishell: syntax error near '<' or '>'", 2);
+		ft_putendl_fd("minishell: syntax error near token `<' or `>'", 2);
 }
 
 void	ft_executor_error(t_executor_error err)
@@ -66,6 +68,7 @@ t_prompt_error	handler_error(t_data *data, t_prompt_error error_type)
 		ft_parser_error(data->exit_status);
 	else if (error_type == ERROR_EXECUTOR)
 		ft_executor_error(data->exit_status);
+	free(data->input);
 	ft_free_all(data);
 	return (PROMPT_CONTINUE);
 }

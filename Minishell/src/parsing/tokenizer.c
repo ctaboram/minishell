@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:33:17 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/11/13 11:26:00 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/10/15 11:46:33 by nikotina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int	handle_redirect_out(t_tokenizer *tokenizer)
+int	handle_redirect_out(t_tokenizer *tokenizer)
 {
 	if (!tokenizer->tokens || tokenizer->tokens->type == TOKEN_PIPE)
 		return (TOK_SYNTAX_REDIR);
@@ -32,7 +32,7 @@ static int	handle_redirect_out(t_tokenizer *tokenizer)
 	return (TOK_OK);
 }
 
-static int	handle_redirect_in(t_tokenizer *tokenizer)
+int	handle_redirect_in(t_tokenizer *tokenizer)
 {
 	if (!tokenizer->tokens || tokenizer->tokens->type == TOKEN_PIPE)
 		return (TOK_SYNTAX_REDIR);
@@ -52,7 +52,7 @@ static int	handle_redirect_in(t_tokenizer *tokenizer)
 	return (TOK_OK);
 }
 
-static int	handle_pipe(t_tokenizer *tokenizer)
+int	handle_pipe(t_tokenizer *tokenizer)
 {
 	if (!tokenizer->tokens || tokenizer->tokens->type == TOKEN_PIPE)
 		return (TOK_SYNTAX_PIPE);
@@ -64,29 +64,9 @@ static int	handle_pipe(t_tokenizer *tokenizer)
 	return (TOK_OK);
 }
 
-static int	handle_word(t_tokenizer *tokenizer)
+int	handle_quote(t_tokenizer *tokenizer, char quote)
 {
-	char *value;
-
-	while (*tokenizer->end && !ft_isspace(*tokenizer->end) &&
-			*tokenizer->end != '\'' && *tokenizer->end != '"' &&
-			*tokenizer->end != '|' && *tokenizer->end != '<' && *tokenizer->end != '>')
-		tokenizer->end++;
-	if (tokenizer->end > tokenizer->start)
-	{
-		value = ft_strndup(tokenizer->start, tokenizer->end - tokenizer->start);
-		if (!value)
-			return (TOK_MEMORY_ALLOC);
-		add_token(&tokenizer->tokens, create_token(value, TOKEN_WORD));
-		free(value);
-	}
-	tokenizer->start = tokenizer->end;
-	return (TOK_OK);
-}
-
-static int	handle_quote(t_tokenizer *tokenizer, char quote)
-{
-	char *value;
+	char	*value;
 
 	tokenizer->end++;
 	while (*tokenizer->end && *tokenizer->end != quote)
@@ -96,7 +76,8 @@ static int	handle_quote(t_tokenizer *tokenizer, char quote)
 		tokenizer->start = tokenizer->end;
 		return (TOK_UNCLOSED_QUOTE);
 	}
-	value = ft_strndup(tokenizer->start + 1, tokenizer->end - tokenizer->start - 1);
+	value = ft_strndup(tokenizer->start + 1,
+			tokenizer->end - tokenizer->start - 1);
 	if (!value)
 	{
 		tokenizer->start = tokenizer->end;
@@ -118,16 +99,9 @@ t_tokenizer_error	tokenizer(t_data *data)
 
 	if (!data)
 		return (TOK_MEMORY_ALLOC);
-	if (data->expand.input_expanded)
-		data->tokenizer.input_to_tokenize = data->expand.input_expanded;
-	else
-		data->tokenizer.input_to_tokenize = data->input;
+	init_tokenizer_data(data);
 	if (!data->tokenizer.input_to_tokenize)
 		return (TOK_MEMORY_ALLOC);
-	status = 0;
-	data->tokenizer.start = data->tokenizer.input_to_tokenize;
-	data->tokenizer.end = data->tokenizer.input_to_tokenize;
-	data->tokenizer.tokens = NULL;
 	while (*data->tokenizer.start)
 	{
 		while (*data->tokenizer.start && ft_isspace(*data->tokenizer.start))
@@ -135,17 +109,8 @@ t_tokenizer_error	tokenizer(t_data *data)
 		if (!*data->tokenizer.start)
 			break ;
 		data->tokenizer.end = data->tokenizer.start;
-		if (*data->tokenizer.end == '\'' || *data->tokenizer.end == '"')
-			status = handle_quote(&data->tokenizer, *data->tokenizer.end);
-		else if(*data->tokenizer.end == '|')
-			status = handle_pipe(&data->tokenizer);
-		else if(*data->tokenizer.end == '>')
-			status = handle_redirect_out(&data->tokenizer);
-		else if(*data->tokenizer.end == '<')
-			status = handle_redirect_in(&data->tokenizer);
-		else
-			status = handle_word(&data->tokenizer);
-		if(status)
+		status = process_token(data);
+		if (status)
 			return (status);
 	}
 	add_token(&data->tokenizer.tokens, create_token(NULL, TOKEN_EOF));

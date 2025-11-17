@@ -1,18 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_data.c                                        :+:      :+:    :+:   */
+/*   init_structs.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: nacuna-g <nacuna-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/13 10:06:47 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/11/13 10:16:04 by nacuna-g         ###   ########.fr       */
+/*   Created: 2025/11/17 12:00:00 by nacuna-g          #+#    #+#             */
+/*   Updated: 2025/11/17 12:00:00 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void	init_expand_struct(t_data *data)
+static void	fatal_error(char *msg)
+{
+	ft_putendl_fd(msg, 1);
+	exit(EXIT_FAILURE);
+}
+
+void	cpy_env(t_data *data, char **env)
+{
+	int	i;
+
+	i = 0;
+	while (env[i])
+		i++;
+	data->env = malloc(sizeof(char *) * (i + 1));
+	if (!data->env)
+		fatal_error("Error allocating memory for env");
+	i = 0;
+	while (env[i])
+	{
+		data->env[i] = ft_strdup(env[i]);
+		if (!data->env[i])
+			fatal_error("Error duplicating env string");
+		i++;
+	}
+	data->env[i] = NULL;
+}
+
+void	init_expand_data(t_data *data)
 {
 	data->expand.result = NULL;
 	data->expand.var = NULL;
@@ -25,16 +52,12 @@ static void	init_expand_struct(t_data *data)
 	data->expand.exit_status = 0;
 }
 
-static void	init_tokenizer_struct(t_data *data)
+void	init_parser_data(t_data *data)
 {
 	data->tokenizer.start = NULL;
 	data->tokenizer.end = NULL;
 	data->tokenizer.input_to_tokenize = NULL;
 	data->tokenizer.tokens = NULL;
-}
-
-static void	init_parser_struct(t_data *data)
-{
 	data->parser.current = NULL;
 	data->parser.head = NULL;
 	data->parser.cmd = NULL;
@@ -42,7 +65,7 @@ static void	init_parser_struct(t_data *data)
 	data->parser.cmds_list = NULL;
 }
 
-static void	init_executor_struct(t_data *data)
+void	init_execute_data(t_data *data)
 {
 	data->execute.cmds_list = NULL;
 	data->execute.env = data->env;
@@ -51,17 +74,4 @@ static void	init_executor_struct(t_data *data)
 	data->execute.pipe_fds[0] = 0;
 	data->execute.pipe_fds[1] = 0;
 	data->execute.in_fd = 0;
-}
-
-void	init_data(t_data *data, char **env)
-{
-	data->input = NULL;
-	data->exit_status = 0;
-	data->env = NULL;
-	cpy_env(data, env);
-	increment_shlvl(data);
-	init_expand_struct(data);
-	init_tokenizer_struct(data);
-	init_parser_struct(data);
-	init_executor_struct(data);
 }

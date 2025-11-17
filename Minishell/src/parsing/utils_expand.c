@@ -33,3 +33,34 @@ char	*ft_strjoin_free(char *s1, char *s2)
 	free(s1);
 	return (tmp);
 }
+
+t_expand_error	append_segment(t_expand *ex, char *start, int len)
+{
+	char	*segment;
+	char	*tmp;
+
+	segment = ft_strndup(start, len);
+	if (!segment)
+		return (EXPAND_MEMORY_ALLOC);
+	tmp = ft_strjoin_free(ex->result, segment);
+	free(segment);
+	if (!tmp)
+		return (EXPAND_MEMORY_ALLOC);
+	ex->result = tmp;
+	return (EXPAND_OK);
+}
+
+t_expand_error	handle_dollar(t_data *data)
+{
+	data->expand.i++;
+	if (data->expand.input[data->expand.i] == '\0'
+		|| data->expand.input[data->expand.i] == ' ')
+	{
+		data->expand.result = ft_strjoin_free(data->expand.result, "$");
+		if (!data->expand.result)
+			return (EXPAND_MEMORY_ALLOC);
+	}
+	else
+		return (expand_variable(data));
+	return (EXPAND_OK);
+}

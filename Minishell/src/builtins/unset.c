@@ -12,67 +12,28 @@
 
 #include "../includes/minishell.h"
 
-static int	count_env_vars(char **env)
+static char	**process_unset_var(char **env, char *var)
 {
-	int	size;
-
-	if (!env)
-		return (0);
-	size = 0;
-	while (env[size])
-		size++;
-	return (size);
-}
-
-static int	get_var_name_length(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i] && str[i] != '=')
-		i++;
-	return (i);
-}
-
-static char	**create_new_env(char **env, char *var_to_remove)
-{
-	int		i;
-	int		j;
-	int		var_len;
-	int		env_var_len;
 	char	**new_env;
+	char	**temp;
 
-	var_len = ft_strlen(var_to_remove);
-	new_env = malloc(sizeof(char *) * (count_env_vars(env) + 1));
+	new_env = create_new_env(env, var);
 	if (!new_env)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (env[i])
+		return (env);
+	if (new_env != env)
 	{
-		env_var_len = get_var_name_length(env[i]);
-		if (ft_strncmp(env[i], var_to_remove, var_len) != 0
-			|| var_len != env_var_len)
-		{
-			new_env[j] = ft_strdup(env[i]);
-			if (!new_env[j])
-			{
-				ft_free_env(new_env);
-				return (NULL);
-			}
-			j++;
-		}
-		i++;
+		temp = env;
+		env = new_env;
+		ft_free_env(temp);
 	}
-	new_env[j] = NULL;
-	return (new_env);
+	else
+		ft_free_env(new_env);
+	return (env);
 }
 
 char	**ft_builtin_unset(char **args, char **env)
 {
-	int		i;
-	char	**new_env;
-	char	**temp;
+	int	i;
 
 	if (!args || !env || !args[1])
 		return (env);
@@ -85,17 +46,7 @@ char	**ft_builtin_unset(char **args, char **env)
 			i++;
 			continue ;
 		}
-		new_env = create_new_env(env, args[i]);
-		if (!new_env)
-			return (env);
-		if (new_env != env)
-		{
-			temp = env;
-			env = new_env;
-			ft_free_env(temp);
-		}
-		else
-			ft_free_env(new_env);
+		env = process_unset_var(env, args[i]);
 		i++;
 	}
 	return (env);
