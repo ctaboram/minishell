@@ -183,5 +183,5 @@ Este proyecto es de código abierto y está disponible bajo los términos del pr
 ---
 
 <div align="center">
-  <sub>Desarrollado con ❤️ como parte del cursus de <a href="https://42.fr">42</a></sub>
+  <sub>Desarrollado con ❤️ como parte del cursus de <a href="https://www.42malaga.com/">42</a></sub>
 </div>
