@@ -83,13 +83,13 @@ minishell/
 ## 🛠️ Instalación
 
 ### Prerrequisitos
-- GCC o Clang
+- CC
 - Make
 - Valgrind (para tests de memoria)
 
 ### Clonar el repositorio
 ```bash
-git clone [https://github.com/ctaboram/minishell.git]
+git clone https://github.com/ctaboram/minishell.git
 cd minishell
 ```
 
@@ -97,7 +97,7 @@ cd minishell
 
 ### Compilar el proyecto
 ```bash
-make                    # Compilación completa
+make                   # Compilación completa
 make clean             # Limpiar archivos objeto
 make fclean            # Limpieza completa
 make re                # Recompilar desde cero
@@ -143,7 +143,6 @@ exit
 - **Comandos built-in** - `cd`, `echo`, `env`, `export`, `unset`, `pwd`, `exit`
 - **Pipes y redirections** - Soporte para `|`, `<`, `>`, `>>`
 - **Manejo de señales** - `Ctrl+C`, `Ctrl+D`, `Ctrl+\`
-- **Gestión de memoria** - Sin memory leaks
 
 ## 🏗️ Arquitectura
 
@@ -167,28 +166,19 @@ Este proyecto cumple estrictamente con todas las normas requeridas:
 - Compila libft usando su propio Makefile
 
 ### ✅ **Código**
-- Escrito en C según la Norma
+- Escrito en C según la Norma V4
 - Sin segmentation faults o comportamiento indefinido
 - Gestión adecuada de memoria (sin leaks)
 - Manejo correcto de errores
 
-### ✅ **Estructura**
-- Libft en carpeta dedicada
-- Headers organizados en `includes/`
-- Código fuente modular en `src/`
-
 ## 👥 Autores
 
-- **ctaboada** - Contribuidor principal
-- **nacuna-g** - Contribuidor principal
+- **ctaboada** -
+- **nacuna-g** -
 
 ## 📝 Licencia
 
 Este proyecto es de código abierto y está disponible bajo los términos del proyecto académico de 42.
-
-## 🤝 Contribuciones
-
-Este proyecto fue desarrollado como parte del cursus de 42. Las contribuciones están limitadas a los autores del proyecto.
 
 ---
 
