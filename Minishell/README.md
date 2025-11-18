@@ -22,38 +22,62 @@ Un shell simple implementado en C como parte del proyecto 42.
 
 ```
 minishell/
-├── includes/           # Archivos de cabecera
-│   ├── minishell.h    # Header principal
-│   └── libft.h        # Header de libft
-├── libft/             # Biblioteca libft
-├── src/               # Código fuente organizado por módulos
-│   ├── core/          # 🎯 Archivos principales
-│   │   ├── main.c     # Punto de entrada del programa
-│   │   ├── prompt.c   # Gestión del prompt y loop principal
-│   │   └── utils_main.c # Utilidades de inicialización
-│   ├── parsing/       # 📝 Análisis y procesamiento de entrada
-│   │   ├── tokenizer.c # Tokenización de comandos
-│   │   ├── parser.c   # Análisis sintáctico
-│   │   ├── expand.c   # Expansión de variables
-│   │   └── utils_*.c  # Utilidades de parsing
-│   ├── execution/     # ⚡ Ejecución de comandos
-│   │   ├── executor.c # Motor de ejecución
-│   │   └── utils_executor.c # Utilidades de ejecución
-│   ├── builtins/      # 🔧 Comandos integrados
-│   │   ├── builtins.c # Gestión general de builtins
-│   │   ├── cd.c       # Comando cd
-│   │   ├── echo.c     # Comando echo
-│   │   ├── env.c      # Comando env
-│   │   ├── pwd.c      # Comando pwd
-│   │   ├── export.c   # Comando export
-│   │   ├── unset.c    # Comando unset
-│   │   └── utils_export.c # Utilidades de export
-│   └── utils/         # 🛠️ Utilidades generales
-│       ├── errors.c   # Manejo de errores
-│       ├── free.c     # Gestión de memoria
-│       └── signals.c  # Manejo de señales
-├── obj/               # Archivos objeto (estructura espejo de src/)
-└── Makefile          # Sistema de construcción
+├── includes/
+│   ├── minishell.h
+│   └── libft.h
+│
+├── libft/
+│
+├── src/
+│   ├── builtins/
+│   │   ├── builtins.c
+│   │   ├── cd.c
+│   │   ├── echo.c
+│   │   ├── env.c
+│   │   ├── exit.c
+│   │   ├── export.c
+│   │   ├── pwd.c
+│   │   ├── unset.c
+│   │   ├── utils_cd.c
+│   │   ├── utils_export.c
+│   │   ├── utils_export2.c
+│   │   ├── utils_export3.c
+│   │   └── utils_unset.c
+│
+│   ├── core/
+│   │   ├── init_structs.c
+│   │   ├── main.c
+│   │   ├── prompt.c
+│   │   └── utils_main.c
+│
+│   ├── execution/
+│   │   ├── executor.c
+│   │   ├── utils_executor.c
+│   │   ├── utils_executor2.c
+│   │   ├── utils_executor3.c
+│   │   └── utils_executor4.c
+│
+│   ├── parsing/
+│   │   ├── expand.c
+│   │   ├── parser.c
+│   │   ├── tokenizer.c
+│   │   ├── utils_expand.c
+│   │   ├── utils_parser.c
+│   │   ├── utils_parser2.c
+│   │   ├── utils_parser3.c
+│   │   ├── utils_tokenizer.c
+│   │   └── utils_tokenizer2.c
+│
+│   └── utils/
+│       ├── errors_child.c
+│       ├── errors.c
+│       ├── free.c
+│       ├── signals.c
+│       └── signals2.c
+│
+├── Makefile
+└── README.md
+
 ```
 
 ## 🛠️ Instalación
