@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-#include <sys/stat.h>
 
 void	ft_remove_last_dir(char *path)
 {
@@ -38,8 +37,7 @@ void	ft_strjoin_path(const char *base, const char *rel, char *result)
 
 int	find_valid_parent(char *oldpwd, char *newpwd)
 {
-	struct stat	st;
-	size_t		prev_len;
+	size_t	prev_len;
 
 	ft_strlcpy(newpwd, oldpwd, MAX_PROMPT_SIZE);
 	while (ft_strlen(newpwd) > 1)
@@ -48,11 +46,8 @@ int	find_valid_parent(char *oldpwd, char *newpwd)
 		ft_remove_last_dir(newpwd);
 		if (ft_strlen(newpwd) == prev_len)
 			break ;
-		if (stat(newpwd, &st) == 0 && S_ISDIR(st.st_mode))
-		{
-			if (chdir(newpwd) == 0)
-				return (1);
-		}
+		if (chdir(newpwd) == 0)
+			return (1);
 	}
 	ft_strlcpy(newpwd, "/", MAX_PROMPT_SIZE);
 	if (chdir("/") == 0)

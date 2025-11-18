@@ -14,6 +14,7 @@ OBJ_DIR		= obj
 # Core files
 CORE_SRCS	= $(SRC_DIR)/core/main.c \
 			  $(SRC_DIR)/core/prompt.c \
+			  $(SRC_DIR)/core/utils_prompt.c \
 			  $(SRC_DIR)/core/utils_main.c \
 			  $(SRC_DIR)/core/init_structs.c
 

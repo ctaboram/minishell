@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: carlos <carlos@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 12:07:18 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/22 10:29:25 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/11/18 12:10:03 by carlos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ static char	*get_prompt(void)
 		username = "guest";
 	if (!getcwd(cwd, sizeof(cwd)))
 		cwd[0] = '\0';
-	snprintf(prompt, MAX_PROMPT_SIZE, BPURPLE"%s@minishell~"YELLOW"%s->"
-		RESET, username, cwd);
+	build_prompt(prompt, username, cwd);
 	return (prompt);
 }
 

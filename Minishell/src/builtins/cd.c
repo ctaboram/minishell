@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: carlos <carlos@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 10:42:44 by ctaboada          #+#    #+#             */
-/*   Updated: 2025/10/16 12:11:18 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/11/18 12:36:08 by carlos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-#include <sys/stat.h>
 
 static char	*get_target_path(char **args, t_data *data)
 {
@@ -30,28 +29,14 @@ static char	*get_target_path(char **args, t_data *data)
 
 static int	validate_path(char *path, char **args)
 {
-	struct stat	st;
-
 	if (!path && (!args[1] || !args[1][0]))
 	{
-		fprintf(stderr, "minishell: cd: HOME not set\n");
+		write(STDERR_FILENO, "minishell: cd: HOME not set\n", 29);
 		return (1);
 	}
 	if (!path && args[1] && ft_strcmp(args[1], "-") == 0)
 	{
-		fprintf(stderr, "minishell: cd: OLDPWD not set\n");
-		return (1);
-	}
-	if (stat(path, &st) == 0 && !S_ISDIR(st.st_mode))
-	{
-		fprintf(stderr, "minishell: cd: %s: Not a directory\n", path);
-		return (1);
-	}
-	if (stat(path, &st) != 0 && ft_strcmp(path, "..") != 0)
-	{
-		ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
-		ft_putstr_fd(path, STDERR_FILENO);
-		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+		write(STDERR_FILENO, "minishell: cd: OLDPWD not set\n", 31);
 		return (1);
 	}
 	return (0);
@@ -84,13 +69,14 @@ static int	handle_getcwd_fail(char *oldpwd, char *newpwd, char *path)
 	{
 		if (!find_valid_parent(oldpwd, newpwd))
 		{
-			fprintf(stderr, "minishell: cd: error retrieving "
-				"current directory: getcwd: cannot access "
-				"parent directories: No such file or directory\n");
+			write(STDERR_FILENO, "minishell: cd: error retrieving ", 32);
+			write(STDERR_FILENO, "current directory: getcwd: cannot access ",
+				41);
+			write(STDERR_FILENO, "parent: No such file or directory\n", 35);
 			return (1);
 		}
-		fprintf(stderr, "minishell: cd: warning: could not "
-			"get current directory: moved to nearest valid parent\n");
+		write(STDERR_FILENO, "minishell: cd: warning", 22);
+		write(STDERR_FILENO, "get current directory\n", 22);
 	}
 	else if (oldpwd[0])
 		ft_strjoin_path(oldpwd, path, newpwd);
@@ -113,7 +99,7 @@ int	ft_builtin_cd(char **args, t_data *data)
 		get_oldpwd(oldpwd, data);
 	if (args[1] && args[2])
 	{
-		fprintf(stderr, "minishell: cd: too many arguments\n");
+		write(STDERR_FILENO, "minishell: cd: too many arguments\n", 35);
 		return (1);
 	}
 	path = get_target_path(args, data);
@@ -121,9 +107,7 @@ int	ft_builtin_cd(char **args, t_data *data)
 		return (1);
 	if (chdir(path) != 0)
 	{
-		ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
-		ft_putstr_fd(path, STDERR_FILENO);
-		ft_putendl_fd(": Permission denied", STDERR_FILENO);
+		perror("minishell: cd");
 		return (1);
 	}
 	if (!getcwd(newpwd, sizeof(newpwd)))

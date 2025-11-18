@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: carlos <carlos@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:39:52 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/22 11:00:34 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/11/18 13:09:31 by carlos           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@
 # include <unistd.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include <string.h>
 # include <signal.h>
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <sys/ioctl.h>
 # include <limits.h>
+# include <errno.h>
 
 # define BPURPLE			"\001\033[1;35m\002"
 # define YELLOW				"\001\033[0;33m\002"
@@ -196,6 +196,7 @@ typedef struct s_data
 
 // PROMPT FUNCTIONS
 t_prompt_error		init_prompt(t_data *data);
+void				build_prompt(char *prompt, char *username, char *cwd);
 
 // EXPAND FUNCTION
 t_expand_error		expand_word(t_data *data);
