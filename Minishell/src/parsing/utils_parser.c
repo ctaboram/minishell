@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_parser.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 12:29:46 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/10/10 10:25:38 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/11/19 11:31:12 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,18 +68,22 @@ int	handle_heredoc(t_cmd *cmd, char *delimiter)
 	char	*tmp_file;
 	int		fd;
 	int		saved_exit_code;
+	int		saved_stdin;
 
+	saved_stdin = dup(STDIN_FILENO);
 	saved_exit_code = g_signal_exit_code;
 	g_signal_exit_code = 0;
 	setup_heredoc_signals();
 	fd = open_heredoc_file(&tmp_file, saved_exit_code);
-	if (fd == -1)
-		return (-1);
 	if (read_heredoc_lines(fd, delimiter, tmp_file) == -1)
 	{
+		dup2(saved_stdin, STDIN_FILENO);
+		close(saved_stdin);
 		setup_signals();
 		return (-1);
 	}
+	dup2(saved_stdin, STDIN_FILENO);
+	close(saved_stdin);
 	setup_signals();
 	g_signal_exit_code = saved_exit_code;
 	cmd->redir_in = tmp_file;

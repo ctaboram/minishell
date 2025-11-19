@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nikotina <nikotina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:00:00 by nikotina          #+#    #+#             */
-/*   Updated: 2025/10/22 16:00:00 by nikotina         ###   ########.fr       */
+/*   Updated: 2025/11/19 11:18:22 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,9 @@ static void	handle_sigint_heredoc(int sig)
 	(void)sig;
 	g_signal_exit_code = 130;
 	c = '\n';
+	printf("\n");
 	ioctl(STDIN_FILENO, TIOCSTI, &c);
+	close(STDIN_FILENO);
 }
 
 void	setup_heredoc_signals(void)
