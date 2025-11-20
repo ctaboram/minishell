@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:00:00 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/11/19 11:39:22 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/11/20 10:19:29 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void	setup_child_signals(void)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	signal(SIGTSTP, SIG_DFL);
 }
 
 void	setup_exec_signals(void)

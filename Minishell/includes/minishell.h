@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:39:52 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/11/19 11:40:01 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/11/20 10:31:13 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,6 +205,7 @@ t_expand_error		expand_word(t_data *data);
 void				init_expand(t_data *data);
 char				*ft_strjoin_free(char *s1, char *s2);
 t_expand_error		append_segment(t_expand *ex, char *start, int len);
+t_expand_error		process_text_and_vars(t_data *data);
 t_expand_error		handle_dollar(t_data *data);
 t_expand_error		expand_variable(t_data *data);
 

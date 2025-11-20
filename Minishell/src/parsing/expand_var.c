@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expand.c                                           :+:      :+:    :+:   */
+/*   expand_var.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 11:50:45 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/11/19 11:38:42 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/11/20 10:41:23 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,47 +77,5 @@ t_expand_error	expand_variable(t_data *data)
 	data->expand.result = tmp;
 	free(data->expand.var);
 	free(data->expand.value);
-	return (EXPAND_OK);
-}
-
-static t_expand_error	process_text_and_vars(t_data *data)
-{
-	t_expand_error	status;
-
-	while (data->expand.input[data->expand.i])
-	{
-		data->expand.start = data->expand.i;
-		while (data->expand.input[data->expand.i]
-			&& data->expand.input[data->expand.i] != '$')
-			data->expand.i++;
-		if (data->expand.i > data->expand.start)
-		{
-			status = append_segment(&data->expand,
-					data->expand.input + data->expand.start,
-					data->expand.i - data->expand.start);
-			if (status != EXPAND_OK)
-				return (status);
-		}
-		if (data->expand.input[data->expand.i] == '$')
-		{
-			status = handle_dollar(data);
-			if (status != EXPAND_OK)
-				return (status);
-		}
-	}
-	return (EXPAND_OK);
-}
-
-t_expand_error	expand_word(t_data *data)
-{
-	t_expand_error	status;
-
-	init_expand(data);
-	if (!data->expand.result)
-		return (EXPAND_MEMORY_ALLOC);
-	status = process_text_and_vars(data);
-	if (status != EXPAND_OK)
-		return (status);
-	data->expand.input_expanded = data->expand.result;
 	return (EXPAND_OK);
 }

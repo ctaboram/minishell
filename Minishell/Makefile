@@ -26,7 +26,9 @@ PARSING_SRCS= $(SRC_DIR)/parsing/tokenizer.c \
 			  $(SRC_DIR)/parsing/utils_parser.c \
 			  $(SRC_DIR)/parsing/utils_parser2.c \
 			  $(SRC_DIR)/parsing/utils_parser3.c \
-			  $(SRC_DIR)/parsing/expand.c \
+			  $(SRC_DIR)/parsing/expand_text.c \
+			  $(SRC_DIR)/parsing/expand_var.c \
+			  $(SRC_DIR)/parsing/expand_word.c \
 			  $(SRC_DIR)/parsing/utils_expand.c
 
 # Execution files

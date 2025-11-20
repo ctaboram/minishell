@@ -6,7 +6,7 @@
 /*   By: nacuna-g <nacuna-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 09:42:00 by nacuna-g          #+#    #+#             */
-/*   Updated: 2025/11/19 11:39:18 by nacuna-g         ###   ########.fr       */
+/*   Updated: 2025/11/20 10:41:14 by nacuna-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,13 @@ static void	handle_sigint(int sig)
 static void	handle_sigquit(int sig)
 {
 	(void)sig;
+	if (rl_line_buffer && rl_line_buffer[0] != '\0')
+	{
+		write(1, "\nquit\n", 6);
+		exit(131);
+	}
+	rl_on_new_line();
+	rl_redisplay();
 }
 
 static void	handle_sigtstp(int sig)
